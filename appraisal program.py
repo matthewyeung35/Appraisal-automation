@@ -1,7 +1,10 @@
  # takes a str money value, return with formatted int
 def money_format(money):
-    money = int(money)
-    return '{:,}'.format(money)
+    if ',' in money:
+        return money
+    else:
+        money = int(money)
+        return '{:,}'.format(money)
 
 # date formater, input 2021-01-01, return January 1, 2021
 def date_format(date):
@@ -52,10 +55,36 @@ def date_format(date):
         date[2] = '2'
     return ('{} {}, {}'.format(date[1],date[2], date[0]))
 
-# TODO name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
+#name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
 def name_format(name):
-    pass
-
+    result = ('')
+    temp_list=[]
+    #if more than 1 name, use a list to separate names, else create a list with 1 element
+    if ';' in name:
+        name = name.split(';')
+    else:
+        temp_list.append(name)
+        name = temp_list 
+    # remove the empty element created by last ;
+    if len(name) > 1:
+        name.pop()
+    i_count = 0
+    for i in name:
+        if i_count >= 1:
+            i = i.strip()
+        # if in , format, swap last anf first name
+        if ',' in i:
+            exchange_name = i.split(',')
+            exchange_name = exchange_name[1].strip() + ' ' + exchange_name[0].strip()
+        else:
+            exchange_name = i
+        name[i_count] = exchange_name
+        i_count += 1
+    for i in name:
+        result += i
+        result += (' & ')
+    result = result[:-3]
+    return result.title()
 
 # For generating sales history
 def sales_history():
@@ -81,7 +110,7 @@ def sales_history():
     print ('Geo Date')
     geo_date =date_format(input())
     print ('Geo Name')
-    geo_name =input() 
+    geo_name = name_format(input())
     print ('Geo Price')
     geo_price = input()
     result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for a total consideration of ${}.\n'.format(geo_date, geo_name, money_format(geo_price)))
@@ -123,6 +152,8 @@ def sales_history():
                 print ('Input data for more mls')
             else:
                 break
+    elif mls == 'n':
+        result += ('Currently, there is no MLS listing for this property. \n')
     #collect psa data
     if psa == 'y':   
         print ('PSA Date')
@@ -160,11 +191,21 @@ def takes_info():
     else:
         storey = 1
     if ownership == '1':
-        print ('Quadrant, Street1, Street2, end/corner/interior')
-        condo_location = input().split(',')
+        while True:
+            print ('Quadrant, Street1, Street2, end/corner/interior')
+            condo_location = input().split(',')
+            if len(condo_location) == 4:
+                break
+            else:
+                print ('invalid input')
     if ownership == '0':
-        print ('lot shape, interior/end/corner, backing')
-        freehold_location = input().split(',')
+        while True:
+            print ('lot shape, interior/end/corner, backing')
+            freehold_location = input().split(',')
+            if len(freehold_location) == 3:
+                break
+            else:
+                print ('invalid input')
     if ownership =='0' and type == '2':
         print ('townhouse location?')
         townhouse_location = input()
@@ -225,7 +266,14 @@ def takes_info():
     #lease required?
     print ('leased required? y/n')
     lease = input()
-    return
+
+#TODO takes in info of the house
+def takes_interior_info():
+    pass
+
+#TODO generate comment for interior
+def interior_comment_gen():
+    pass
 
 # for neighbourhood and site comments
 def neighbour_site():
@@ -247,7 +295,7 @@ def neighbour_site():
         result += ("Neighbourhood\nThe subject area is located within the MLS district known as '{}' in the City of {}. The neighbourhood is comprised of a mix of residential, commercial, as well as condominium properties. "
         'The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size and condition. Newer built condominium developments were also noted in the general area. '
         'Based on average days on market on the recent MLS listings, the demand for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, the market trend in the immediate area is considered increasing at the time of appraisal. '
-        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit and {}.'.format(district, city, facilities))
+        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit and {}. '.format(district, city, facilities))
     adverse_comment = adverse_comment_gen()
     result += adverse_comment + ('\n\nSite\n')
     #condo townhouse site
@@ -284,7 +332,7 @@ def neighbour_site():
         elif type == '2':
             freehold_type = 'townhouse'
         result += ('Appraiser did not note any wind turbines at the property at the time of appraisal. Underground oil storage utility were not visible to the appraiser at time of appraisal. '
-        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto a {} '
+        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto {}. '
         'The lot is improved with a {} storey {} dwelling{}The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'Site improvements include covered concrete porch, pathways and a patio at rear. The subject site features fully fenced backyard and average and similar landscaping in comparison to other properties in the area. '
         'The subject property existing use is residential single family and it is the opinion of the appraiser that this activity constitutes the highest and best use. '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
@@ -351,7 +399,7 @@ def adverse_comment_gen():
         # for out of range railway, no adverse
         if len(adverse) == 1 and adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1'):
             result += ('Railroad tracks were also noted within the general area of the subject property. ')
-        if len(adverse) == 0 or (adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1')):
+        if (len(adverse) == 1 and (adverse[0] not in ['0','1','2','3','4','5'])) or (adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1')):
             result += ('The Appraiser did not notice any functional or external obsolescence at the time of the site visit. ')
         else:
             no_of_adverse = len(adverse)
@@ -443,6 +491,7 @@ def adverse_distance_convert(dist):
 def main():
     print("hello world welcome")
     takes_info()
+    #takes_interior_info()
     print (sales_history())
     print (neighbour_site())
 if __name__ == "__main__":
