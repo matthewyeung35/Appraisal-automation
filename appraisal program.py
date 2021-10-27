@@ -491,9 +491,10 @@ def adverse_distance_convert(dist):
 def main():
     print("hello world welcome")
     takes_info()
-    #takes_interior_info()
+    #interior_info()
     print (sales_history())
-    print (neighbour_site())
+    print(neighbour_site())
+
 if __name__ == "__main__":
     main()
 
