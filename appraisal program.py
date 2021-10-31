@@ -30,7 +30,7 @@ def date_format(date):
     elif date[1] =='10':
         date[1] = 'October'
     elif date[1] =='11':
-        date[1] = 'Novmeber'
+        date[1] = 'Novmember'
     elif date[1] =='12':
         date[1] = 'Decmeber'
     if date[2] == '01':
@@ -124,7 +124,7 @@ def sales_history():
             mls_date = date_format(input())
             print ('Listing price')
             listing_price = money_format(input())
-            print ('Sold price/Ter/Can/Sus/Cond')
+            print ('Sold price/Ter/Can/Sus/Cond/Exp/Act')
             sold_price = input()
             if sold_price != 'cond':
                 print ('Days on market?')
@@ -138,6 +138,10 @@ def sales_history():
                     result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was cancelled after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))
             elif sold_price == 'sus':
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was suspeneded after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))
+            elif sold_price == 'exp':
+                result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was expired after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))           
+            elif sold_price == 'act':
+                result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and is currently listed for sale. \n'.format(mls_no, mls_date, listing_price))  
             else:
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was sold for ${} after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, money_format(sold_price), dom))
             #more mls entry if neccessary
@@ -165,6 +169,7 @@ def sales_history():
         print ('PSA Price')
         psa_price = money_format(input())
         result += ('As per the purchase and sales agreement dated {}, the subject property is under contract between {} (Buyer) and {} (Seller) for a total consideration of ${}.'.format(psa_date, psa_buyer, psa_seller, psa_price)) 
+    result += ('\n\n')
     return result
  
 # get property information
@@ -224,7 +229,7 @@ def takes_info():
     print ('Owner=0/Tenant=1/Both=2/vacant=3')
     occupy = input()
     # parking
-    print ('Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None=5')
+    print ('Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6')
     parking_type = input ()
     print ('How many parking space?')
     parking_no = input()
@@ -269,6 +274,7 @@ def takes_info():
 
 # generate basement comments
 def basement_comment_gen():
+    print ('Basement')
     global basement_kitchen
     basement_kitchen = 0 
     if basement == '3':
@@ -286,9 +292,9 @@ def basement_comment_gen():
         if basement_rooms[2] == '1':
             basement_kitchen = 1
         basement_interior.extend(['living room', basement_rooms[0] , 'dining room', basement_rooms[1], 'kitchen', basement_rooms[2]])
-        print('rec/gym/den/laundry')
+        print('rec/family/den/laundry')
         basement_rooms = input().split(',')
-        basement_interior.extend(['recreational room', basement_rooms[0] , 'gym room', basement_rooms[1], 'den', basement_rooms[2], 'laundry room', basement_rooms[3]])
+        basement_interior.extend(['recreational room', basement_rooms[0] , 'family room', basement_rooms[1], 'den', basement_rooms[2], 'laundry room', basement_rooms[3]])
         print('bed/full bath/2-piece bath')
         basement_rooms = input().split(',')
         basement_interior.extend(['bedroom', basement_rooms[0] , 'full bathroom', basement_rooms[1], '2-piece bathroom', basement_rooms[2]])
@@ -304,7 +310,6 @@ def basement_comment_gen():
             except:
                 i += 1
         basement_interior = new_interior
-        print (basement_interior)
         types_of_room = int(len(basement_interior)/2)
         i = 0
         result = ''
@@ -327,6 +332,7 @@ def basement_comment_gen():
         elif basement == '1':
             result = ('The basement is partly finished featuring {}and mech area. Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. '
             'It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. '.format(result))
+        result += ('\n\n')
         return result
 
 # generate interior comments
@@ -345,7 +351,7 @@ def interior_info():
             print ('living+dining+kitchen? (0 or 1)')
             storey_rooms = input()
             if storey_rooms == '1':
-                interior1.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
+                interior1.extend(['living room', '1', 'dining room', '1', 'kitchen', '1'])
             print ('family room/den/office/laundry')
             storey_rooms = input().split(',')
             interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
@@ -450,6 +456,7 @@ def interior_info():
         'Interior finishes are standard and consistent with similar type units in the condominium complex. '. format(total_bed, condo_location[3], sqft, interior_room_gen(interior1)))
         result += interior_finishes_gen(interior_finishes)
         result += ('The effective age utilized in this appraisal report is based on the MLS listing and pictures provided by the homeowner. We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
+    result += ('\n\n')
     return result
 
 #generate interior finishes comment
@@ -511,8 +518,8 @@ def exterior_comment_gen(exterior_finish):
     return result
 
 # takes interior1/2/3, a list where odd index is room name and even index is room count, generate 'a foyer, living room, dining room, a master bedroom featuring a full ensuite bathroom, 3 average sized bedrooms and a full bathroom off the main hallway' etc
-#['family room', '1', 'den', '0', 'office', '0', 'laundry room', '1', 'master bedroom', '0', 'average sized bedroom', '1', 'full ensuite bathroom', '0', 'full bathroom', '0', '2-piece bathroom', '1'] 
-# ['loft', '0', 'den', '1', 'office', '1', 'laundry room', '0', 'master bedroom', '1', 'average sized bedroom', '2', 'full ensuite bathroom', '1', 'full bathroom', '1', '2-piece bathroom', '0']
+#['family room', '1', 'den', '0', 'office', '0', 'laundry room', '1', 'master bedroom', '0', 'bedroom', '1', 'full ensuite bathroom', '0', 'full bathroom', '0', '2-piece bathroom', '1'] 
+# ['loft', '0', 'den', '1', 'office', '1', 'laundry room', '0', 'master bedroom', '1', 'bedroom', '2', 'full ensuite bathroom', '1', 'full bathroom', '1', '2-piece bathroom', '0']
 def interior_room_gen(interior):
     result = ''
     # remove the room from list if 0 > no that type of room
@@ -532,15 +539,17 @@ def interior_room_gen(interior):
     suffix = 'a '
     while i < types_of_room:
         # only print comment if there is the room
-        if int(interior[i*2+1]) > 0:
+        if interior[i*2] != 'full ensuite bathroom':
             # master bedroom with ensuite comments
             if interior[i*2] == 'master bedroom' and interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) > 0:
                 result += (suffix + 'master bedroom featuring a full ensuite bathoom')
+                interior[i*2+1] = str(int(interior[i*2+1])-1)
                 # remove ensuite count by 1, rest for average bedroom
                 interior[i*2+5] = str(int(interior[i*2+5])-1)
             #average bedroom with ensuite comments
-            if interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) == 1:
+            elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) == 1:
                 result += (suffix + interior[i*2+3] + ' averaged sized bedroom featuring a full ensuite bathroom')
+                interior[i*2+1] = str(int(interior[i*2+1])-1)
             elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) > 1:
                 result += (suffix + interior[i*2+3] + ' averaged sized bedrooms featuring full ensuite bathroom')
                 interior[i*2+1] = str(int(interior[i*2+1])-int(interior[i*2+3]))
@@ -548,20 +557,18 @@ def interior_room_gen(interior):
             if interior[i*2] == 'bedroom':
                 interior[i*2] = 'average sized bedroom'
             # adding all rooms, omitting ensuite bathroom
-            if int(interior[i*2+1]) > 0:
-                if interior[i*2] == 'full ensuite bathroom' or interior[i*2] == 'master bedroom':
-                    pass
-                elif interior[i*2] == 'bedroom' or interior[i*2] == 'full bathroom' or interior[i*2] == '2-piece bathroom' or int(interior[i*2+1]) > 1:
+            if  int(interior[i*2+1]) > 0 :
+                if interior[i*2] == '2-piece bathroom' and int(interior[i*2+1]) == 1:
+                    result += (suffix + 'a ' + interior[i*2])
+                elif interior[i*2] == 'average sized bedroom' or interior[i*2] == 'full bathroom' or int(interior[i*2+1]) > 1:
                     result += (suffix + interior[i*2+1] + ' ' + interior[i*2])
                 else:
                     result += (suffix + interior[i*2])
-            else:
-                result += suffix
                 #formating, and s for plural, and add ','
             suffix = ''
-            if int(interior[i*2+1]) > 1 or (interior[i*2] == 'full ensuite bathroom' and int(interior[i*2-1]) > 1):
+            if int(interior[i*2+1]) > 1:
                 suffix += ('s')
-            if interior[i*2] == 'full bathroom' and (storey == '1 1/2' or storey == '2' or storey == '2 1/2' or storey == '3') and int(interior[i*2+1]) > 0:
+            if interior[i*2] == 'full bathroom' and (storey == '1 1/2' or storey == '2' or storey == '2 1/2' or storey == '3'):
                 suffix += (' off the main hallway. ')
             elif i == types_of_room-2:
                 suffix += (', and ')
@@ -570,13 +577,20 @@ def interior_room_gen(interior):
             else:
                 suffix += (', ')
         # special case for ensuite baths
-        elif interior[i*2] == 'full ensuite bathroom' and int(interior[i*2+1]) == 0 and i == types_of_room-2:
-            suffix = ', and '
+        elif interior[i*2] == 'full ensuite bathroom':
+            suffix = ''
+            if int(interior[i*2-1]) > 1:
+                suffix += ('s')
+            if i == types_of_room-2:
+                suffix += ', and '
+            elif i == types_of_room-1:
+                suffix += ('. ')
+            else:
+                suffix += (', ')
         
         i += 1
     result += suffix
     return result
-    pass
 
 # for neighbourhood and site comments
 def neighbour_site():
@@ -756,7 +770,7 @@ def garage_comment_gen():
     result = ('')
     if parking_type == '3' or parking_type =='4':
         result += (' that includes ')
-    elif parking_type == '0' or parking_type == '1' or parking_type == '2':
+    elif parking_type == '0' or parking_type == '1' or parking_type == '2' or parking_type =='5':
         result += (' featuring a ')
     result += parking_no
     if parking_type == '0':
@@ -769,6 +783,8 @@ def garage_comment_gen():
         result += (' underground parking space and a locker***. ')
     elif parking_type == '4':
         result += (' surface parking space. ')
+    elif parking_type == '5':
+        result += ('a private asphalt-surfaced driveway. ')
     else :
         result += ('. ')
     if parking_type == '0' or parking_type == '1' or parking_type == '2':
@@ -795,12 +811,24 @@ def adverse_distance_convert(dist):
 
 
 def main():
-    print("hello world welcome")
-    #takes_info()
-    print (basement_comment_gen())
-    #print (interior_info())
-    #print (sales_history())
-    #print(neighbour_site())
+    result = ''
+    print("Welcome")
+    takes_info()
+    result += (basement_comment_gen())
+    result += (interior_info())
+    result += (sales_history())
+    result += (neighbour_site())
+    text_file = open("Output.txt", "w")
+    text_file.write(result)
+    text_file.close()
+
+    #------testing stuff----------
+    '''
+    global storey
+    storey = 2
+    interior = ['loft', '1', 'den', '1', 'office', '1', 'laundry room', '0', 'master bedroom', '1', 'bedroom', '3', 'full ensuite bathroom', '1', 'full bathroom', '1', '2-piece bathroom', '0']
+    print(interior_room_gen(interior))
+    '''
 
 if __name__ == "__main__":
     main()
