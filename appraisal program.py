@@ -12,7 +12,7 @@ def date_format(date):
     if date[1] == '01':
         date[1] = 'January'
     elif date[1] =='02':
-        date[1] = 'Febraury'
+        date[1] = 'February'
     elif date[1] =='03':
         date[1] = 'March'
     elif date[1] =='04':
@@ -30,9 +30,9 @@ def date_format(date):
     elif date[1] =='10':
         date[1] = 'October'
     elif date[1] =='11':
-        date[1] = 'Novmember'
+        date[1] = 'November'
     elif date[1] =='12':
-        date[1] = 'Decmeber'
+        date[1] = 'December'
     if date[2] == '01':
         date[2] = '1'
     elif date[2] == '02':
@@ -176,9 +176,9 @@ def sales_history():
 def takes_info():
     global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location
     print ('City?')
-    city = input()
+    city = input().title()
     print ('District')
-    district = input()
+    district = input().title()
     # type of property
     print ('Free=0/condo=1?')
     ownership = input()
@@ -212,8 +212,12 @@ def takes_info():
             else:
                 print ('invalid input')
     if ownership =='0' and type == '2':
-        print ('townhouse location?')
+        print ('townhouse location interior=0/ end = 1?')
         townhouse_location = input()
+        if townhouse_location == '0':
+            townhouse_location = 'interior'
+        elif townhouse_location == '1':
+            townhouse_location = 'end'
     #street type
     print ('Commercial=0/Residential=1/Main=2/Commuter=3 front street')
     street_type = input()
@@ -278,10 +282,10 @@ def basement_comment_gen():
     global basement_kitchen
     basement_kitchen = 0 
     if basement == '3':
-        return ('None; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation.')
+        return ('None; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
     elif basement == '2':
         return ('The basement is unfinished featuring a mech area.  Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. '
-        'It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. ')
+        'It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
     else:
         basement_interior = []
         print('separate entrance?')
@@ -337,10 +341,12 @@ def basement_comment_gen():
 
 # generate interior comments
 def interior_info():
-    global interior1, interior2, interior3, total_bed
+    global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, year_built, sqft, exterior_finish
     result = ('')
     while True:
         try:
+            print ('year built?')
+            year_built = input()
             print ('sqft?')
             sqft = input()
             print ('brick=0/stone=1/vinyl=2/concrete=3/stucco=4')
@@ -361,6 +367,8 @@ def interior_info():
             interior1.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
             print('ensuite/full/partial bathroom')
             storey_rooms = input().split(',')
+            total_bath = int(storey_rooms[0]) + int(storey_rooms[1])
+            total_partial = int(storey_rooms[2])
             interior1.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
             print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
             interior1_floor = input().split(',')
@@ -382,9 +390,12 @@ def interior_info():
                     interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
                 print ('master bed/ average bed')
                 storey_rooms = input().split(',')
+                total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
                 interior2.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
                 print('ensuite/full/partial bathroom')
                 storey_rooms = input().split(',')
+                total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
+                total_partial += int(storey_rooms[2])
                 interior2.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
                 print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
                 interior2_floor = input().split(',')
@@ -396,9 +407,12 @@ def interior_info():
                 interior3.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
                 print ('master bed/ average bed')
                 storey_rooms = input().split(',')
+                total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
                 interior3.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
                 print('ensuite/full/partial bathroom')
                 storey_rooms = input().split(',')
+                total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
+                total_partial += int(storey_rooms[2])
                 interior3.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
                 print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
                 interior3_floor = input().split(',')
@@ -421,7 +435,7 @@ def interior_info():
         house_name = 'townhouse'
     if ownership == '0':
         result += ('The subject is a {} storey {} dwelling containing approximately {} square feet of living space and is assumed to be in average physical condition at time of inspection. The exterior of the home is finished with mostly {}. '
-        'The main floor, finished with {} flooring consists of {}'.format(storey, house_name, sqft, exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
+        'The main floor, finished with {} flooring consists of {}'.format(storey, house_name, money_format(sqft), exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
         if storey != '1':
             result += ('The second floor, finished with {} flooring, consists of {}'.format(floor_comment_gen(interior2_floor), interior_room_gen(interior2)))
         if storey == '3' or storey == '2 1/2':
@@ -432,7 +446,7 @@ def interior_info():
         'We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
     elif ownership == '1' and type == '2':
         result += ('The subject is a {} storey condominium townhouse {} unit containing approximately {} square feet of living space and is assumed to be in average physical condition at time of appraisal. '
-        'The exterior of the home is finished with mostly {}. The main floor, finished with {}, consists of {}'. format(storey, condo_location[3], sqft, exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
+        'The exterior of the home is finished with mostly {}. The main floor, finished with {}, consists of {}'. format(storey, condo_location[3], money_format(sqft), exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
         if storey != '1':
             result += ('The second floor, finished with {} flooring, consists of {}'.format(floor_comment_gen(interior2_floor), interior_room_gen(interior2)))
         if storey == '3' or storey == '2 1/2':
@@ -442,7 +456,7 @@ def interior_info():
         'We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
     elif ownership == '1' and type == '4':
         result += ('The subject is a {} storey condominium stacked townhouse {} unit containing approximately {} square feet of living space and is assumed to be in average physical condition at time of appraisal. '
-        'The exterior of the home is finished with mostly {}. The main floor, finished with {}, consists of {}'. format(storey, condo_location[3], sqft, exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
+        'The exterior of the home is finished with mostly {}. The main floor, finished with {}, consists of {}'. format(storey, condo_location[3], money_format(sqft), exterior_comment_gen(exterior_finish), floor_comment_gen(interior1_floor), interior_room_gen(interior1)))
         if storey != '1':
             result += ('The second floor, finished with {} flooring, consists of {}'.format(floor_comment_gen(interior2_floor), interior_room_gen(interior2)))
         if storey == '3' or storey == '2 1/2':
@@ -453,7 +467,7 @@ def interior_info():
     elif ownership == '1' and type == '3':
         result += ('The subject is a {} bedroom condominium apartment {} unit containing approximately {} square feet of living space and is assumed to be in average physical condition at time of appraisal. '
         'The floor plan consists of {}. Interior is finished with laminate flooring in the living room, dining room and bedrooms, ceramic tiles in the kitchen, bathroom and foyer. '
-        'Interior finishes are standard and consistent with similar type units in the condominium complex. '. format(total_bed, condo_location[3], sqft, interior_room_gen(interior1)))
+        'Interior finishes are standard and consistent with similar type units in the condominium complex. '. format(total_bed, condo_location[3], money_format(sqft), interior_room_gen(interior1)))
         result += interior_finishes_gen(interior_finishes)
         result += ('The effective age utilized in this appraisal report is based on the MLS listing and pictures provided by the homeowner. We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
     result += ('\n\n')
@@ -542,7 +556,7 @@ def interior_room_gen(interior):
         if interior[i*2] != 'full ensuite bathroom':
             # master bedroom with ensuite comments
             if interior[i*2] == 'master bedroom' and interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) > 0:
-                result += (suffix + 'master bedroom featuring a full ensuite bathoom')
+                result += (suffix + 'master bedroom featuring a full ensuite bathroom')
                 interior[i*2+1] = str(int(interior[i*2+1])-1)
                 # remove ensuite count by 1, rest for average bedroom
                 interior[i*2+5] = str(int(interior[i*2+5])-1)
@@ -655,22 +669,28 @@ def neighbour_site():
         'The subject property existing use is residential single family and it is the opinion of the appraiser that this activity constitutes the highest and best use. '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
     result += adverse_comment
 
-    #TODO basement kitchen comment
+    #basement kitchen comment
     if basement_kitchen == 1:
-        pass
-
-
+        if occupy == '1' or occupy == '2':
+            result += ('As per the homeowner, the basement unit is tenant occupied. '
+            'The subject property has a basement kitchen of which retrofit or secondary living status is not warranted by the appraiser and should be verified by the lender. '
+            'As per MPAC, the subject property is registered as a single family dwelling. At the request of the client, the property is being valued in Fee Simple')
+        else:
+            result += ('As per the homeowner, the basement is being used for personal use only. '
+            'The subject property has a basement kitchen of which retrofit or secondary living status is not warranted by the appraiser and should be verified by the lender. '
+            'As per MPAC, the subject property is registered as a single family dwelling. At the request of the client, the property is being valued in Fee Simple')
     #tenant comment
-    if occupy == '1':
+    elif occupy == '1' or occupy == '2':
         if ownership == '0':
             ownership_name = 'Fee Simple'
         else:
             ownership_name = 'Condominium Ownership'
         result += ('As per the homeowner, the subject property was tenant occupied at time of appraisal. At the request of the client, the property is being valued in ' + ownership_name) 
+    if basement_kitchen == 1 or occupy == '1' or occupy == '2':
         if lease == 'n':
             result += (', and the Leased Fee value has not been addressed in this assignment.')
         else:
-            result += ('.')
+            result += ('. ')
     return result
 
 # generate adverse comment
