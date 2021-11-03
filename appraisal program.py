@@ -1,3 +1,7 @@
+from pynput.keyboard import Key, Controller
+from datetime import datetime
+import time
+
  # takes a str money value, return with formatted int
 def money_format(money):
     if ',' in money:
@@ -113,7 +117,10 @@ def sales_history():
     geo_name = name_format(input())
     print ('Geo Price')
     geo_price = input()
-    result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for a total consideration of ${}.\n'.format(geo_date, geo_name, money_format(geo_price)))
+    if geo_price == '0':
+        result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for an undisclosed amount. \n'.format(geo_date, geo_name))
+    else:
+        result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for a total consideration of ${}. \n'.format(geo_date, geo_name, money_format(geo_price)))
     # collect mls data
     if mls == 'y':
         #create lists to store multiple listing
@@ -341,7 +348,7 @@ def basement_comment_gen():
 
 # generate interior comments
 def interior_info():
-    global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, year_built, sqft, exterior_finish
+    global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, year_built, sqft, exterior_finish, interior2_floor, interior1_floor, interior3_floor
     result = ('')
     while True:
         try:
@@ -364,13 +371,13 @@ def interior_info():
             print ('master bed/ average bed')
             storey_rooms = input().split(',')
             total_bed = int(storey_rooms[0]) + int(storey_rooms[1])
-            interior1.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
+            interior1.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
             print('ensuite/full/partial bathroom')
             storey_rooms = input().split(',')
             total_bath = int(storey_rooms[0]) + int(storey_rooms[1])
             total_partial = int(storey_rooms[2])
             interior1.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
-            print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
+            print ('hardwood=0/broadloom=1/laminate=2/ceramic=3/')
             interior1_floor = input().split(',')
             # for 2 storey
             if storey != '1':
@@ -391,13 +398,13 @@ def interior_info():
                 print ('master bed/ average bed')
                 storey_rooms = input().split(',')
                 total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
-                interior2.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
+                interior2.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
                 print('ensuite/full/partial bathroom')
                 storey_rooms = input().split(',')
                 total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
                 total_partial += int(storey_rooms[2])
                 interior2.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
-                print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
+                print ('hardwood=0/broadloom=1/laminate=2/ceramic=3/')
                 interior2_floor = input().split(',')
             if storey == '2 1/2 ' or storey == '3':
                 interior3=[]
@@ -408,7 +415,7 @@ def interior_info():
                 print ('master bed/ average bed')
                 storey_rooms = input().split(',')
                 total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
-                interior3.extend(['master bedroom', storey_rooms[0] , 'average sized bedroom' , storey_rooms[1]])
+                interior3.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
                 print('ensuite/full/partial bathroom')
                 storey_rooms = input().split(',')
                 total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
@@ -486,7 +493,7 @@ def interior_finishes_gen(interior_finishes):
 
 
 #generate comment for flooring (takes list ['0','1','2'] etc)
-#hardwood=0/broadloom=1/ceramic=2/laminate=3
+#hardwood=0/broadloom=1/laminate=2/ceramic=3
 def floor_comment_gen(flooring):
     result = ('')
     floor_type_count = 0
@@ -494,11 +501,11 @@ def floor_comment_gen(flooring):
     for i in flooring:
         if i == '0':
             result += ('hardwood')
-        elif i == '3':
+        elif i == '2':
             result += ('laminate')
         elif i == '1':
             result += ('broadloom')
-        elif i == '2':
+        elif i == '3':
             result += ('ceramic tiles')
         if floor_type_count < (floor_type_total-2):
             result += (', ')
@@ -632,7 +639,7 @@ def neighbour_site():
     #condo townhouse site
     if ownership == '1' and type == '2':
         result += ('Appraiser did not note any wind turbines at the property at the time of appraisal. Underground storage utility were not visible to the appraiser on the subject site at time of appraisal viewing. '
-        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. '
+        "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. "
         'The subject site is improved with a condominium townhouse complex located on a {}. The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'The subject property is a {} storey condominium townhouse {} unit{}'
         'As a title search was not conducted, we are not aware of any easements or restrictions that would have a negative impact on value. '
@@ -640,15 +647,15 @@ def neighbour_site():
     #condo apt
     elif ownership == '1' and type =='3':
         result += ('Appraiser did not note any wind turbines at the property at the time of appraisal. Underground storage utility were not visible to the appraiser on the subject site at time of appraisal viewing. '
-        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. The subject site is improved with a high rise condominium complex located on a {}. '
+        "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. The subject site is improved with a high rise condominium complex located on a {}. "
         'The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'The subject property is a {} bedroom condominium apartment {} unit{}'
         'As a title search was not conducted, we are not aware of any easements or restrictions that would have a negative impact on value. We were not provided any documentation regarding environmental contamination. '
-        'The complex is subject to condo by-laws, lenders should satisfy themselves. Common site area includes fitness centre, swimming pool, guest suites and party room. '.format(street_type, electric, total_bed, condo_location[3], garage_comment_gen()))
+        'The complex is subject to condo by-laws, lenders should satisfy themselves. Common site area includes fitness centre, swimming pool, guest suites and party room. '.format(street_type, electric, str(total_bed), condo_location[3], garage_comment_gen()))
     #stack townhouse
     elif ownership == '1' and type == '4':
         result += ('Appraiser did not note any wind turbines at the property at the time of appraisal. Underground storage utility were not visible to the appraiser on the subject site at time of appraisal viewing. '
-        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. '
+        "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. "
         'The subject site is improved with a condominium townhouse complex located on a {}. The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'The subject property is a {} storey condominium stacked townhouse {} unit{}'
         'As a title search was not conducted, we are not aware of any easements or restrictions that would have a negative impact on value. '
@@ -663,7 +670,7 @@ def neighbour_site():
         elif type == '2':
             freehold_type = 'townhouse'
         result += ('Appraiser did not note any wind turbines at the property at the time of appraisal. Underground oil storage utility were not visible to the appraiser at time of appraisal. '
-        'Environmental hazards were not noted at the property based on appraiser’s visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto {}. '
+        "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto {}. "
         'The lot is improved with a {} storey {} dwelling{}The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'Site improvements include covered concrete porch, pathways and a patio at rear. The subject site features fully fenced backyard and average and similar landscaping in comparison to other properties in the area. '
         'The subject property existing use is residential single family and it is the opinion of the appraiser that this activity constitutes the highest and best use. '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
@@ -691,7 +698,7 @@ def neighbour_site():
             result += (', and the Leased Fee value has not been addressed in this assignment.')
         else:
             result += ('. ')
-    return result
+    return result + ('\n ')
 
 # generate adverse comment
 def adverse_comment_gen():
@@ -811,9 +818,6 @@ def garage_comment_gen():
         result += ('garage on a private asphalt-surfaced driveway. ')
     return result
 
-    
-    
-
 # for adverse_comment, add M/KM/close proxmity comment
 def adverse_distance_convert(dist):
     if dist == '200':
@@ -829,26 +833,549 @@ def adverse_distance_convert(dist):
     elif dist == '1':
         return ('1KM')
 
+#----auto input codes--------
+# delete everything in box
+def delete():
+    keyboard.press(Key.ctrl)
+    keyboard.type('a')
+    keyboard.release(Key.ctrl)
+    keyboard.press(Key.delete)
+    keyboard.release(Key.delete)
+
+# press tab for (times)
+def tab(times):
+    for _ in range(times):
+        keyboard.press(Key.tab)
+        keyboard.release(Key.tab)
+
+# press down for (times) - for box type input
+def down(times):
+    for _ in range(times):
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
+
+# press right for (times)
+def right(times):
+    for _ in range(times):
+        keyboard.press(Key.right)
+        keyboard.release(Key.right)
+
+# press right for (times)
+def left(times):
+    for _ in range(times):
+        keyboard.press(Key.left)
+        keyboard.release(Key.left)
+
+# press enter single time
+def enter():
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
+# for page 4 effective age
+def effective_age():
+    if year_built == '2021':
+        e_age = '0'
+    elif year_built >= '2019':
+        e_age = '1'
+    elif year_built >= '2017':
+        e_age = '2'
+    elif year_built >= '2015':
+        e_age = '3'
+    elif year_built >= '2006':
+        e_age = '5'
+    elif year_built >= '1996':
+        e_age = '10'
+    elif type != '0' or year_built >= '1986':
+        e_age = '15'
+    else:
+        e_age = '20'
+    if type == '0':
+        remain_life = str(55 - int(e_age))
+    else:
+        remain_life = str(50 - int(e_age))
+    return e_age + 'E', remain_life + '+-' 
+
+# takes year_built and house type, return depreciation table value
+def depreciation_table(e_age):
+    e_age = e_age[:-1]
+    #for detached
+    result = ''
+    if type == '0':
+        if e_age == '0' or e_age == '1' or e_age == '2':
+            result = e_age
+        elif e_age == '3':
+            result = '2'
+        elif e_age == '5':
+            result = '4'
+        elif e_age == '10':
+            result = '9'
+        elif e_age == '15':
+            result == '15'
+        else:
+            result == '21'
+    # for non detached
+    else:
+        if e_age == '0' or e_age == '1' or e_age == '2'or e_age == '3':
+            result = e_age
+        elif e_age == '5':
+            result = '5'
+        elif e_age == '10':
+            result = '11'
+        else:
+            result == '17'
+    return result
+
+# for page 4 all floring comment
+def all_flooring_gen():
+    total_floor = interior1_floor
+    if storey != '1':
+        for floor in interior2_floor:
+            if floor not in total_floor:
+                total_floor.append(floor)
+    if storey == '2 1/2' or storey == '3':
+        for floor in interior3_floor:
+            if floor not in total_floor:
+                total_floor.append(floor)
+    total_floor.sort(key = int)
+    return floor_comment_gen(total_floor).capitalize()
+
+
+# main function for auto input pdf
+def auto_input(basement_comments, interior_comments, sales_history_comments):
+    global keyboard
+    keyboard = Controller()
+    print ('extra ownership check box exist? 0/1')
+    ownership_restriction_checkbox = input()
+    print ('prepare to move mouse: 3 secs')
+    # seconds of prepare time
+    time.sleep(3)
+    # start from page3 - APPRAISER:
+    if city == 'Ottawa':
+        keyboard.type('Sindu R. Rajaruban')
+    else:
+        keyboard.type('Ruban Kanagenthiran')
+    tab(12)
+    enter()
+    tab(2)
+    enter()
+    tab(7)
+    if ownership == '0':
+        down(2)
+    else:
+        down(6)
+    tab(15)
+    # Occupied by:
+    if occupy == '0':
+        down(2)
+    elif occupy == '1':
+        down(4)
+    elif occupy == '2':
+        down(7)
+    elif occupy == '3':
+        down(3)
+    # template skips after Taxes$ to EASEMENTS: Utility/Access/Other
+    tab(2)
+    #ownership restrictions extra checkbox
+    if ownership_restriction_checkbox == '1':
+        enter()
+        tab(1)
+    enter()
+    tab(23)
+    if electric == '1':
+        right(1)
+    tab(2)
+    ''' 
+    Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6
+    parking_type = '0'
+    parking_no = '1'
+    '''
+    # parking starting at DRIVEWAY: PRIVATE
+    if parking_type == '0':
+        park_comment = parking_no + ' Attach.'
+    elif parking_type == '1':
+        park_comment = parking_no + ' Builtin.'
+    elif parking_type == '2':
+        park_comment = parking_no + ' Detach.'
+    elif parking_type == '3':
+        park_comment = parking_no + ' Underg.'
+    elif parking_type == '4':
+        park_comment = parking_no + ' Aboveg.'
+    elif parking_type == '5' or parking_type == '6':
+        park_comment = 'None'
+    if ownership == '0':
+        if parking_type == '6':
+            enter()
+        tab(3)
+        if parking_no == '1':
+            enter()
+            tab(1)
+            enter()
+            tab(1)
+        else:
+            tab(2)
+        tab(3)
+        if parking_type != '6':
+            enter()
+        tab(6)
+        if parking_type == '5' or parking_type == '6':
+            enter()
+        tab(2)
+        if parking_type == '6':
+            enter()
+        tab(2)
+        enter()
+        tab(1)
+        keyboard.type(park_comment)
+    # for condo townhouse template, might have to make changes
+    elif ownership == '1' and (type == '2' or type == '4'):
+        if parking_type == '6' or parking_type == '3' or parking_type == '4':
+            enter()
+        tab(1)
+        if parking_type == '3' or parking_type == '4':
+            enter()
+        tab(2)     
+        if parking_type == '3' or parking_type == '4':
+            enter()
+            tab(2)
+        elif int(parking_no) > 1:
+            enter()
+            tab(1)
+            enter()
+            tab(1)
+        else:
+            tab(2)
+        tab(2)
+        if parking_type == '3':
+            enter()
+        tab(7)
+        if parking_type == '4' or parking_type == '5' or parking_type == '6':
+            enter()
+        tab(2)
+        if parking_type == '3' or parking_type == '6':
+            enter()
+        tab(3)
+        keyboard.type(park_comment)
+    elif ownership == '1' and type == '3':
+        tab(1)
+        if parking_type == '6':
+            enter()
+        tab(6)
+        if parking_type == '6':
+            enter()   
+        tab(1)
+        if parking_type == '6':
+            enter()
+        tab(6)
+        if parking_type == '6':
+            enter()
+        tab(4)
+        enter()
+        tab(1)
+        keyboard.type(park_comment)
+    tab(5)
+    right(1)
+    tab(1)
+    right(2)
+    tab(2)
+    # start at page 4 -CONSTRUCTION COMPLETE:
+    time.sleep(9)
+    enter()
+    enter()
+    tab(2)
+    keyboard.type(year_built)
+    tab(1)
+    e_age, remain_life = effective_age()
+    keyboard.type(e_age) 
+    tab(1)
+    keyboard.type(remain_life)
+    tab(1)
+    right(1)
+    tab(1)
+    keyboard.type(sqft)
+    tab(4)
+    enter()
+    tab(3)
+    # start from PROPERTY TYPE:
+    if ownership == '0':
+        down(2)
+        tab(1)
+        if type == '0':
+            down(2)
+        elif type == '1':
+            down(3)
+        elif type == '2':
+            down(4)
+        tab(1)
+        if storey == '1':
+            down(2)
+        elif storey == '1 1/2':
+            down(4)
+        elif storey == '2':
+            down(6)
+        elif storey == ' 2 1/2':
+            down(7)
+        elif storey == '3':
+            down(8)
+        tab(2)
+        if basement == '3':
+            down(6)
+        else:
+            down(2)
+        tab(1)
+        if basement == '0':
+            down(3)
+        elif basement == '1':
+            down(4)
+        elif basement == '2':
+            down(5)
+        tab(4)
+    elif ownership == '1' and type == '3':
+        down(2)
+        tab(9)
+    # stops at CONDITION bug
+    time.sleep(6)
+    tab(1)
+    # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
+    if exterior_finish == ['0']:
+        down(2)
+    elif exterior_finish == ['0', '2']:
+        down(4)
+    elif exterior_finish == ['2']:
+        down(13)
+    tab(3)
+    right(1)
+    tab(1)
+    right(1)
+    tab(1)
+    keyboard.type('1')
+    tab(1)
+    if int(total_bed)-1 > 0:
+        keyboard.type(str(int(total_bed)-1))
+    tab(6)
+    if total_partial > 0:
+        keyboard.type(str(total_partial))
+    tab(2)
+    if total_bath > 0:
+        keyboard.type(str(total_bath))
+    tab(19)
+    i_f = interior_finishes.split(',')
+    if i_f[1] == '1':
+        enter()
+    tab(2)
+    if i_f[0] == '1':
+        enter()
+    tab(1)
+    # starts at FLOORING
+    delete()
+    keyboard.type(all_flooring_gen())
+    tab(40)
+    delete()
+    keyboard.type(basement_comments)
+    tab(1)
+    if parking_no == '0':
+        down(5)
+    elif parking_no == '1':
+        down(1)
+    elif parking_no == '2':
+        down(2)
+    elif parking_no == '3':
+        down(3)
+    tab(1)
+    keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
+    tab(2)
+    delete()
+    keyboard.type(interior_comments)
+    tab(1)
+    enter()
+    tab(1)
+    keyboard.type('Unknown; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus.')
+    tab(1)
+    enter()
+    tab(1)
+    keyboard.type('Unknown; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus.')
+    tab(1)
+    # at interior table, first level entrance  
+    #TODO auto fill interior table?
+    tab(85)
+    # at cost approach table, garage
+    if parking_no == '0':
+        keyboard.type('None')
+    else:
+        keyboard.type(parking_no + ' car garage')
+    tab(4)
+    if basement == '0':
+        keyboard.type('Fully finished')
+    elif basement == '1':
+        keyboard.type('Partly finished')
+    elif basement == '2':
+        keyboard.type('Unfinished')
+    elif basement == '3':
+        keyboard.type('None')
+    tab(6)
+    delete()
+    tab(7)
+    keyboard.type (depreciation_table(e_age))
+    tab(7)
+    # at page 5- date of sale of subject
+    time.sleep(20)
+    tab(4)
+    keyboard.type(year_built+ '/' + e_age)
+    tab(1)
+    if e_age == '0E' or e_age == '1E' or e_age == '2E' or e_age == '3E' or e_age =='5E':
+        keyboard.type('Good')
+    else:
+        keyboard.type('Average')
+    tab(3)
+    # at LOCATION 1 box
+    if ownership == '0':
+        keyboard.type('LOCATION')
+        tab(2)
+        keyboard.type('LOCATION')
+        tab(2)
+        keyboard.type('INTERIOR FINISHES')
+    else:
+        tab(4)
+    tab(75)
+    delete()
+    keyboard.type('Please see addendum.')
+    tab(1)
+    if lease == 'n':
+        enter()
+    tab(2)
+    right(1)
+    tab(1)
+    right(1)
+    tab(1)
+    delete()
+    #TODO oversize sale history comment
+    keyboard.type(sales_history_comments)
+    tab(6)
+    keyboard.type(str(datetime.date(datetime.now())))
+    tab(6)
+    keyboard.type(str(datetime.date(datetime.now())))
+    time.sleep(15)
+    # start from page 5, final date
+    tab(79)
+    time.sleep(4)
+    tab(13)
+    time.sleep(1)
+    tab(1)
+    time.sleep(0.5)
+    enter()
+    tab(3)
+    right(1)
+    tab(2)
+    right(1)
+    tab(6)
+    right(2)
+    tab(1)
+    delete()
+    if city == 'Ottawa':
+        keyboard.type('1601-22')
+    else:
+        keyboard.type('1244-22')
+    tab(1)
+    keyboard.type(str(datetime.date(datetime.now())))
+    tab(1)
+    delete()
+    keyboard.type('not inspected')
+    # at view property 
+    time.sleep(3)
+    tab(8)
+    time.sleep(1)
+    tab(7)
+    time.sleep(1)
+    tab(12)
+    time.sleep(0.5)
+    tab(1)
+    time.sleep(0.2)
+    tab(1)
+    enter()
+    tab(1)
+    enter()
+    tab(2)
+    enter()
+    tab(1)
+    enter()
+    tab(2)
+    enter()
+    tab(8)
+    time.sleep(1)
+    tab(8)
+    time.sleep(1)
+    tab(1)
+    time.sleep(0.2)
+    tab(4)
+    if ownership_restriction_checkbox == '1':
+        tab(1)
+    right(1)
+    # finishes at page 3- highest use checkbox
+
+def assign_var():
+    global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type
+    global storey, electric, parking_type, parking_no, lease, basement, freehold_location, total_bed, total_partial, total_bath, interior_finishes
+    global basement_comments, interior_comments, sales_history_comments, site_neighbourhood_comments, year_built, sqft, exterior_finish, ownership_restriction_checkbox, interior1_floor, interior2_floor, interior3_floor
+    city = 'Ottawa'
+    district = 'Markville'
+    # Free=0/condo=1
+    ownership = '1'
+    # Det=0/Semi=1/Town=2/Apt=3/Stack=4
+    type = '3'
+    storey = '2'
+    # lot shape, interior/end/corner, backing
+    freehold_location = 'rectangular,interior,other residential lots'
+    # townhouse location
+    townhouse_location = 'end'
+    # Commercial=0/Residential=1/Main=2/Commuter=3 front street
+    street_type = '1'
+    # occupy Owner=0/Tenant=1/Both=2/vacant=3
+    occupy = '0'
+    # Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6
+    parking_type = '3'
+    parking_no = '1'
+    # finished=0/partly=1/unfin=2/none=3
+    basement = '0'
+    adverse = ''
+    electric = '1'
+    total_bed = '3'
+    total_partial = '1' 
+    total_bath = '2'
+    # potlight/crown moulding
+    interior_finishes = '1,1'
+    # brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
+    exterior_finish = ['0', '2']
+    basement_comments = 'dummy for basement comment'
+    interior_comments = 'dummy for interior comment'
+    sales_history_comments = 'dummy for sales history'
+    site_neighbourhood_comments = 'dummy for site&neighbourhood'
+    year_built = '2001'
+    sqft = '1500'
+    interior1_floor, interior2_floor, interior3_floor = ['2','3'], ['1'], ['3']
+    ownership_restriction_checkbox = '0'
+    
 
 def main():
+    global keyboard
+    keyboard = Controller()
+
     result = ''
     print("Welcome")
     takes_info()
-    result += (basement_comment_gen())
-    result += (interior_info())
-    result += (sales_history())
-    result += (neighbour_site())
+    basement_comments = (basement_comment_gen())
+    interior_comments = (interior_info())
+    sales_history_comments = (sales_history())
+    site_neighbourhood_comments = (neighbour_site())
+    result += basement_comments + interior_comments + sales_history_comments + site_neighbourhood_comments
     text_file = open("Output.txt", "w")
     text_file.write(result)
     text_file.close()
 
+    
+    #assign_var()
+    auto_input(basement_comments, interior_comments, sales_history_comments)
+    print ('done')
     #------testing stuff----------
-    '''
-    global storey
-    storey = 2
-    interior = ['loft', '1', 'den', '1', 'office', '1', 'laundry room', '0', 'master bedroom', '1', 'bedroom', '3', 'full ensuite bathroom', '1', 'full bathroom', '1', '2-piece bathroom', '0']
-    print(interior_room_gen(interior))
-    '''
+
 
 if __name__ == "__main__":
     main()

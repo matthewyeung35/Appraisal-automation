@@ -1,6 +1,14 @@
 from pynput.keyboard import Key, Controller
 import time
 
+# delete everything in box
+def delete():
+    keyboard.press(Key.ctrl)
+    keyboard.type('a')
+    keyboard.release(Key.ctrl)
+    keyboard.press(Key.delete)
+    keyboard.release(Key.delete)
+
 # press tab for (times)
 def tab(times):
     for _ in range(times):
@@ -52,10 +60,29 @@ def effective_age():
         remain_life = str(50 - int(e_age))
     return e_age + 'E', remain_life + '+-' 
 
+# for page 4 all floring comment
+def all_flooring_gen():
+    total_floor = interior1_floor
+    if storey != '1':
+        for floor in interior2_floor:
+            if floor not in total_floor:
+                total_floor.append(floor)
+    if storey == '2 1/2' or storey == '3':
+        for floor in interior3_floor:
+            if floor not in total_floor:
+                total_floor.append(floor)
+    total_floor.sort(key = int)
+    print (total_floor)
+    return floor_comment_gen(total_floor).capitalize()
+
+
 # main function for auto input pdf
 def auto_input():
     global keyboard
     keyboard = Controller()
+    print ('prepare to move mouse: 3 secs')
+
+    print ()
     # seconds of prepare time
     time.sleep(3)
     # start from page3 - APPRAISER:
@@ -84,6 +111,9 @@ def auto_input():
         down(3)
     # template skips after Taxes$ to EASEMENTS: Utility/Access/Other
     tab(2)
+    #ownership restrictions extra checkbox
+    if ownership_restriction_checkbox == '1':
+        tab(1)
     enter()
     tab(23)
     if electric == '1':
@@ -235,7 +265,7 @@ def auto_input():
             down(5)
         tab(4)
         # stops at CONDITION bug
-        time.sleep(5)
+        time.sleep(6)
         tab(1)
         # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
         if exterior_finish == ['0']:
@@ -266,14 +296,10 @@ def auto_input():
         tab(1)
         # starts at FLOORING
 
-
-
-
-
 def assign_var():
     global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type
     global storey, electric, parking_type, parking_no, lease, basement, freehold_location, total_bed, total_partial, total_bath, interior_finishes
-    global basement_comments, interior_comments, sales_history_comments, site_neighbourhood_comments, year_built, sqft, exterior_finish
+    global basement_comments, interior_comments, sales_history_comments, site_neighbourhood_comments, year_built, sqft, exterior_finish, ownership_restriction_checkbox, interior1_floor, interior2_floor, interior3_floor
     city = 'Ottawa'
     district = 'Markville'
     # Free=0/condo=1
@@ -309,12 +335,37 @@ def assign_var():
     site_neighbourhood_comments = 'dummy for site&neighbourhood'
     year_built = '2001'
     sqft = '1500'
+    interior1_floor, interior2_floor, interior3_floor = ['2','3'], ['1'], ['3']
+    ownership_restriction_checkbox = '1'
+
+def floor_comment_gen(flooring):
+    result = ('')
+    floor_type_count = 0
+    floor_type_total = len(flooring)
+    for i in flooring:
+        if i == '0':
+            result += ('hardwood')
+        elif i == '2':
+            result += ('laminate')
+        elif i == '1':
+            result += ('broadloom')
+        elif i == '3':
+            result += ('ceramic tiles')
+        if floor_type_count < (floor_type_total-2):
+            result += (', ')
+        elif floor_type_count == (floor_type_total-2):
+            result += (', and ')
+        floor_type_count += 1
+    return result
 
 def main():
-    
-    print ('prepare to move mouse: 3 secs')
+    global keyboard
+    keyboard = Controller()
     assign_var()
     auto_input()
+    print (all_flooring_gen())
+
     print ('Done')
 if __name__ == "__main__":
     main()
+
