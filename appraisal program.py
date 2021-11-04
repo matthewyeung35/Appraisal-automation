@@ -92,6 +92,8 @@ def name_format(name):
 
 # For generating sales history
 def sales_history():
+    global sales_history_length
+    sales_history_length = 1
     result = ('')
     #check listing
     while True:
@@ -125,13 +127,14 @@ def sales_history():
     if mls == 'y':
         #create lists to store multiple listing
         while True:
+            sales_history_length += 1
             print ('MLS number')
             mls_no = input()
             print ('MLS list date')
             mls_date = date_format(input())
             print ('Listing price')
             listing_price = money_format(input())
-            print ('Sold price/Ter/Can/Sus/Cond/Exp/Act')
+            print ('Sold price/ter/can/sus/cond/exp/act')
             sold_price = input()
             if sold_price != 'cond':
                 print ('Days on market?')
@@ -167,6 +170,7 @@ def sales_history():
         result += ('Currently, there is no MLS listing for this property. \n')
     #collect psa data
     if psa == 'y':   
+        sales_history_length += 2
         print ('PSA Date')
         psa_date = date_format(input())
         print ('PSA Buyer')
@@ -212,7 +216,7 @@ def takes_info():
                 print ('invalid input')
     if ownership == '0':
         while True:
-            print ('lot shape, interior/end/corner, backing')
+            print ('lot shape, interior/end/corner, backing onto:')
             freehold_location = input().split(',')
             if len(freehold_location) == 3:
                 break
@@ -327,7 +331,9 @@ def basement_comment_gen():
         suffix = 'a '
         while i < types_of_room:
             result += suffix
-            if int(basement_interior[i*2+1]) > 1 or basement_interior[i*2] == 'bedroom' or basement_interior[i*2] == 'full bathroom' or basement_interior[i*2] == '2-piece bathroom':
+            if int(basement_interior[i*2+1]) == 1 and basement_interior[i*2] == '2-piece bathroom':
+                result += 'a ' + basement_interior[i*2]
+            elif int(basement_interior[i*2+1]) > 1 or basement_interior[i*2] == 'bedroom' or basement_interior[i*2] == 'full bathroom':
                 result += basement_interior[i*2+1] + ' ' + basement_interior[i*2]
             else:
                 result += basement_interior[i*2]
@@ -792,14 +798,15 @@ def adverse_comment_gen():
     return result
 
 #convert garage id to text 
-# Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None=5
+# Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/Nonenone = 6
 def garage_comment_gen():
     result = ('')
     if parking_type == '3' or parking_type =='4':
         result += (' that includes ')
     elif parking_type == '0' or parking_type == '1' or parking_type == '2' or parking_type =='5':
         result += (' featuring a ')
-    result += parking_no
+    if int(parking_no) > 0:
+        result += parking_no
     if parking_type == '0':
         result += (' car attached ')
     elif parking_type == '1':
@@ -811,7 +818,7 @@ def garage_comment_gen():
     elif parking_type == '4':
         result += (' surface parking space. ')
     elif parking_type == '5':
-        result += ('a private asphalt-surfaced driveway. ')
+        result += ('private asphalt-surfaced driveway. ')
     else :
         result += ('. ')
     if parking_type == '0' or parking_type == '1' or parking_type == '2':
@@ -823,15 +830,15 @@ def adverse_distance_convert(dist):
     if dist == '200':
         return ('close proximity')
     elif dist == '5':
-        return ('5KM')
+        return ('5 KM')
     elif dist == '10':
-        return ('10KM')
+        return ('10 KM')
     elif dist == '500':
-        return ('500M')
+        return ('500 M')
     elif dist == '1000':
-        return ('1KM')
+        return ('1 KM')
     elif dist == '1':
-        return ('1KM')
+        return ('1 KM')
 
 #----auto input codes--------
 # delete everything in box
@@ -944,7 +951,7 @@ def all_flooring_gen():
 def auto_input(basement_comments, interior_comments, sales_history_comments):
     global keyboard
     keyboard = Controller()
-    print ('extra ownership check box exist? 0/1')
+    print ('extra ownership check box exist? y/n')
     ownership_restriction_checkbox = input()
     print ('prepare to move mouse: 3 secs')
     # seconds of prepare time
@@ -976,7 +983,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     # template skips after Taxes$ to EASEMENTS: Utility/Access/Other
     tab(2)
     #ownership restrictions extra checkbox
-    if ownership_restriction_checkbox == '1':
+    if ownership_restriction_checkbox == 'y':
         enter()
         tab(1)
     enter()
@@ -1118,9 +1125,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             down(8)
         tab(2)
         if basement == '3':
-            down(6)
+            down(4)
         else:
-            down(2)
+            pass
         tab(1)
         if basement == '0':
             down(3)
@@ -1181,7 +1188,12 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     elif parking_no == '3':
         down(3)
     tab(1)
-    keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
+    if parking_type == '5':
+        keyboard.type('None; Private asphalt-surfaced driveway')
+    elif parking_type == '6':
+        keyboard.type('None')
+    else:
+        keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
     tab(2)
     delete()
     keyboard.type(interior_comments)
@@ -1214,7 +1226,8 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(6)
     delete()
     tab(7)
-    keyboard.type (depreciation_table(e_age))
+    delete()
+    keyboard.type(depreciation_table(e_age))
     tab(7)
     # at page 5- date of sale of subject
     time.sleep(20)
@@ -1241,14 +1254,22 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(1)
     if lease == 'n':
         enter()
-    tab(2)
+        tab(2)
+    else:
+        tab(1)
+        delete()
+        keyboard.type('Please see addendum.')
+        tab(1)
     right(1)
     tab(1)
     right(1)
     tab(1)
     delete()
-    #TODO oversize sale history comment
-    keyboard.type(sales_history_comments)
+    #oversize sale history comment
+    if sales_history_length > 4:
+        keyboard.type('Please see addendum.')
+    else:
+        keyboard.type(sales_history_comments)
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
@@ -1280,8 +1301,12 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     delete()
     keyboard.type('not inspected')
     # at view property 
-    time.sleep(3)
-    tab(8)
+    time.sleep(1)
+    tab(3)
+    delete()
+    tab(4)
+    delete()
+    tab(1)
     time.sleep(1)
     tab(7)
     time.sleep(1)
@@ -1306,7 +1331,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(1)
     time.sleep(0.2)
     tab(4)
-    if ownership_restriction_checkbox == '1':
+    if ownership_restriction_checkbox == 'y':
         tab(1)
     right(1)
     # finishes at page 3- highest use checkbox
@@ -1322,7 +1347,7 @@ def assign_var():
     # Det=0/Semi=1/Town=2/Apt=3/Stack=4
     type = '3'
     storey = '2'
-    # lot shape, interior/end/corner, backing
+    # lot shape, interior/end/corner, backing onto:
     freehold_location = 'rectangular,interior,other residential lots'
     # townhouse location
     townhouse_location = 'end'
@@ -1351,7 +1376,7 @@ def assign_var():
     year_built = '2001'
     sqft = '1500'
     interior1_floor, interior2_floor, interior3_floor = ['2','3'], ['1'], ['3']
-    ownership_restriction_checkbox = '0'
+    ownership_restriction_checkbox = 'n'
     
 
 def main():
