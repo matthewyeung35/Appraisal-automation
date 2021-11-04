@@ -1,5 +1,6 @@
 from pynput.keyboard import Key, Controller
 from datetime import datetime
+from openpyxl import load_workbook
 import time
 
  # takes a str money value, return with formatted int
@@ -94,51 +95,37 @@ def name_format(name):
 def sales_history():
     global sales_history_length
     sales_history_length = 1
+    column_no = 'D'
     result = ('')
-    #check listing
-    while True:
-        print('Is there a MLS? y/n')
-        mls = input()
-        if (mls == 'y') or (mls == 'n'):
-            break
-        else:
-            print ('Invalid input')
-    #check psa
-    while True:
-        print('Is there a PSA? y/n')
-        psa = input()
-        if (mls == 'y') or (mls == 'n'):
-            break
-        
-        else:
-            print ('Invalid input')
     # collect geowarehouse data
-    print ('Geo Date')
-    geo_date =date_format(input())
-    print ('Geo Name')
-    geo_name = name_format(input())
-    print ('Geo Price')
-    geo_price = input()
+    geo_date = date_format(ws[column_no+'25'].value)
+    geo_name = str(name_format(ws[column_no+'26'].value))
+    geo_price = money_format(str(ws[column_no+'27'].value))
     if geo_price == '0':
         result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for an undisclosed amount. \n'.format(geo_date, geo_name))
     else:
         result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for a total consideration of ${}. \n'.format(geo_date, geo_name, money_format(geo_price)))
     # collect mls data
-    if mls == 'y':
-        #create lists to store multiple listing
-        while True:
+    mls_count = int(ws[column_no+'28'].value)
+    if mls_count > 0:
+        #add all MLS listings
+        for i in range(mls_count):
             sales_history_length += 1
-            print ('MLS number')
-            mls_no = input()
-            print ('MLS list date')
-            mls_date = date_format(input())
-            print ('Listing price')
-            listing_price = money_format(input())
-            print ('Sold price/ter/can/sus/cond/exp/act')
-            sold_price = input()
-            if sold_price != 'cond':
-                print ('Days on market?')
-                dom = input()
+            if i == 0:
+                mls_column_no = 'D'
+            elif i == 1:
+                mls_column_no = 'E'
+            elif i == 2:
+                mls_column_no = 'F'
+            elif i == 3:
+                mls_column_no = 'G'
+            elif i == 4:
+                mls_column_no = 'H'
+            mls_no = str(ws[mls_column_no+'29'].value)
+            mls_date = date_format(ws[mls_column_no+'30'].value)
+            listing_price = money_format(str(ws[mls_column_no+'31'].value))
+            sold_price = str(ws[mls_column_no+'32'].value)
+            dom = ws[mls_column_no+'33'].value
             # check if mls is terminated/cancelled etc
             if sold_price == 'cond':
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was sold conditionally. \n'.format(mls_no, mls_date, listing_price))
@@ -154,38 +141,24 @@ def sales_history():
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and is currently listed for sale. \n'.format(mls_no, mls_date, listing_price))  
             else:
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was sold for ${} after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, money_format(sold_price), dom))
-            #more mls entry if neccessary
-            while True:
-                print('Is there more MLS? y/n')
-                more_mls = input()
-                if (mls == 'y') or (mls == 'n'):
-                    break
-                else:
-                    print ('Invalid input')
-            if more_mls == 'y':
-                print ('Input data for more mls')
-            else:
-                break
-    elif mls == 'n':
+    elif mls_count == 0:
         result += ('Currently, there is no MLS listing for this property. \n')
     #collect psa data
+    psa = ws[column_no+'34'].value
     if psa == 'y':   
         sales_history_length += 2
-        print ('PSA Date')
-        psa_date = date_format(input())
-        print ('PSA Buyer')
-        psa_buyer =input() 
-        print ('PSA Seller')
-        psa_seller =input() 
-        print ('PSA Price')
-        psa_price = money_format(input())
+        psa_date = date_format(ws[column_no+'35'].value)
+        psa_buyer = ws[column_no+'36'].value
+        psa_seller = ws[column_no+'37'].value
+        psa_price = money_format(ws[column_no+'38'].value)
         result += ('As per the purchase and sales agreement dated {}, the subject property is under contract between {} (Buyer) and {} (Seller) for a total consideration of ${}.'.format(psa_date, psa_buyer, psa_seller, psa_price)) 
     result += ('\n\n')
     return result
  
+# OUTDATED Replaced by input_excel()
 # get property information
 def takes_info():
-    global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location
+    global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location, ownership_restriction_checkbox
     print ('City?')
     city = input().title()
     print ('District')
@@ -286,6 +259,54 @@ def takes_info():
     #lease required?
     print ('leased required? y/n')
     lease = input()
+    print ('extra ownership check box exist? y/n')
+    ownership_restriction_checkbox = input()
+
+# for taking subject data from excel sheet
+def input_excel():
+    global ws, city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location, ownership_restriction_checkbox
+    global year_built, sqft
+    wb = load_workbook(filename = 'house_info.xlsx')
+    ws = wb['house_info']
+    column_no= 'D'
+    city = ws[column_no+'2'].value
+    district = ws[column_no+'3'].value
+    ownership = str(ws[column_no+'4'].value)
+    type = str(ws[column_no+'5'].value)
+    storey = str(ws[column_no+'6'].value)
+    freehold_location = ws[column_no+'7'].value.split(',') 
+    condo_location = ws[column_no+'8'].value.split(',') 
+    townhouse_location = ws[column_no+'9']
+    street_type = str(ws[column_no+'10'].value)
+    occupy = str(ws[column_no+'11'].value)
+    parking_type = str(ws[column_no+'12'].value)
+    parking_no = str(ws[column_no+'13'].value)
+    basement = str(ws[column_no+'14'].value)
+    adverse = ws[column_no+'15'].value.split(',') 
+    nuclear_station = str(ws['F15'].value)
+    adverse_range = ws[column_no+'16'].value.split(',') 
+    facilities = ws[column_no+'17'].value
+    electric = str(ws[column_no+'18'] .value)
+    lease = ws[column_no+'19'].value
+    year_built = str(ws[column_no+'20'].value)
+    sqft = str(ws[column_no+'21'].value)
+    ownership_restriction_checkbox = ws[column_no+'22'].value
+
+    #transform some inputs
+    if street_type == '0':
+        street_type = 'commercial street'
+    elif street_type == '1':
+        street_type = 'residential street'
+    elif street_type == '2':
+        street_type = 'main road'
+    elif street_type == '3':
+        street_type = 'commuter street'
+    if electric == '0':
+        electric = 'underground'
+    else:
+        electric = 'overhead'
+
+    wb.save('house_info.xlsx')
 
 # generate basement comments
 def basement_comment_gen():
@@ -354,14 +375,10 @@ def basement_comment_gen():
 
 # generate interior comments
 def interior_info():
-    global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, year_built, sqft, exterior_finish, interior2_floor, interior1_floor, interior3_floor
+    global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, exterior_finish, interior2_floor, interior1_floor, interior3_floor
     result = ('')
     while True:
         try:
-            print ('year built?')
-            year_built = input()
-            print ('sqft?')
-            sqft = input()
             print ('brick=0/stone=1/vinyl=2/concrete=3/stucco=4')
             exterior_finish = input().split(',')
             #for 1 storey
@@ -496,7 +513,6 @@ def interior_finishes_gen(interior_finishes):
         return ('Interior upgrades include potlights and crown mouldings. ')
     else:
         return ('')
-
 
 #generate comment for flooring (takes list ['0','1','2'] etc)
 #hardwood=0/broadloom=1/laminate=2/ceramic=3
@@ -633,13 +649,13 @@ def neighbour_site():
         'commercial, as well as condominium properties. The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size, and condition. Newly built condominium buildings are also noted in the area. '
         'Based on the average days on market on the recent MLS listings, the demands for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, '
         'the market trend in the immediate area was {} at the time of appraisal. '
-        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, city, demand, facilities))
+        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, city, demand, facilities_format()))
     else:
         #freehold neighbourhood
         result += ("Neighbourhood\nThe subject area is located within the MLS district known as '{}' in the City of {}. The neighbourhood is comprised of a mix of residential, commercial, as well as condominium properties. "
         'The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size and condition. Newer built condominium developments were also noted in the general area. '
         'Based on average days on market on the recent MLS listings, the demand for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, the market trend in the immediate area is considered increasing at the time of appraisal. '
-        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit and {}. '.format(district, city, facilities))
+        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit{}. '.format(district, city, facilities_format()))
     adverse_comment = adverse_comment_gen()
     result += adverse_comment + ('\n\nSite\n')
     #condo townhouse site
@@ -797,7 +813,7 @@ def adverse_comment_gen():
             result += ('See plot map. ')
     return result
 
-#convert garage id to text 
+#convert garage id to text, for site comment
 # Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/Nonenone = 6
 def garage_comment_gen():
     result = ('')
@@ -839,6 +855,26 @@ def adverse_distance_convert(dist):
         return ('1 KM')
     elif dist == '1':
         return ('1 KM')
+
+def facilities_format():
+    if ownership == '0':
+        if ',' in facilities:
+            x = facilities.split(',')
+            i = 0
+            result = ''
+            while i < len(x):
+                if i == 0:
+                    result += (', ') + x[i]
+                elif i != len(x)-1:
+                    result += (',') + x[i]
+                else:
+                    result += (' and') + x[i]
+                i += 1
+            return result
+        else:
+            return (' and ') + facilities
+    else:
+        return facilities
 
 #----auto input codes--------
 # delete everything in box
@@ -951,8 +987,6 @@ def all_flooring_gen():
 def auto_input(basement_comments, interior_comments, sales_history_comments):
     global keyboard
     keyboard = Controller()
-    print ('extra ownership check box exist? y/n')
-    ownership_restriction_checkbox = input()
     print ('prepare to move mouse: 3 secs')
     # seconds of prepare time
     time.sleep(3)
@@ -988,7 +1022,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         tab(1)
     enter()
     tab(23)
-    if electric == '1':
+    if electric == 'overhead':
         right(1)
     tab(2)
     ''' 
@@ -1125,9 +1159,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             down(8)
         tab(2)
         if basement == '3':
-            down(4)
+            down(6)
         else:
-            pass
+            down(2)
         tab(1)
         if basement == '0':
             down(3)
@@ -1274,7 +1308,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(15)
+    time.sleep(13)
     # start from page 5, final date
     tab(79)
     time.sleep(4)
@@ -1303,13 +1337,13 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     # at view property 
     time.sleep(1)
     tab(3)
-    delete()
+    #delete()
     tab(4)
-    delete()
+    #delete()
     tab(1)
     time.sleep(1)
     tab(7)
-    time.sleep(1)
+    time.sleep(0.5)
     tab(12)
     time.sleep(0.5)
     tab(1)
@@ -1336,9 +1370,10 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(1)
     # finishes at page 3- highest use checkbox
 
+# testing variables, not useful function
 def assign_var():
     global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type
-    global storey, electric, parking_type, parking_no, lease, basement, freehold_location, total_bed, total_partial, total_bath, interior_finishes
+    global storey, electric, parking_type, parking_no, lease, basement, freehold_location, total_bed, total_partial, total_bath, interior_finishes, basement_kitchen
     global basement_comments, interior_comments, sales_history_comments, site_neighbourhood_comments, year_built, sqft, exterior_finish, ownership_restriction_checkbox, interior1_floor, interior2_floor, interior3_floor
     city = 'Ottawa'
     district = 'Markville'
@@ -1360,6 +1395,7 @@ def assign_var():
     parking_no = '1'
     # finished=0/partly=1/unfin=2/none=3
     basement = '0'
+    basement_kitchen = 0
     adverse = ''
     electric = '1'
     total_bed = '3'
@@ -1377,15 +1413,14 @@ def assign_var():
     sqft = '1500'
     interior1_floor, interior2_floor, interior3_floor = ['2','3'], ['1'], ['3']
     ownership_restriction_checkbox = 'n'
-    
 
-def main():
-    global keyboard
-    keyboard = Controller()
-
+def full_report():
     result = ''
-    print("Welcome")
-    takes_info()
+    print('Welcome')
+    #takes_info()
+    #assign_var()
+
+    input_excel()
     basement_comments = (basement_comment_gen())
     interior_comments = (interior_info())
     sales_history_comments = (sales_history())
@@ -1395,10 +1430,13 @@ def main():
     text_file.write(result)
     text_file.close()
 
-    
-    #assign_var()
-    auto_input(basement_comments, interior_comments, sales_history_comments)
+    #auto_input(basement_comments, interior_comments, sales_history_comments)
     print ('done')
+
+def main():
+    global keyboard
+    keyboard = Controller()
+    full_report()
     #------testing stuff----------
 
 
