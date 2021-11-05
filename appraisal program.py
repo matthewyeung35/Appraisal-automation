@@ -282,7 +282,7 @@ def input_excel():
     parking_type = str(ws[column_no+'12'].value)
     parking_no = str(ws[column_no+'13'].value)
     basement = str(ws[column_no+'14'].value)
-    adverse = ws[column_no+'15'].value.split(',') 
+    adverse = ws[column_no+'15'].value
     nuclear_station = str(ws['F15'].value)
     adverse_range = ws[column_no+'16'].value.split(',') 
     facilities = ws[column_no+'17'].value
@@ -305,7 +305,10 @@ def input_excel():
         electric = 'underground'
     else:
         electric = 'overhead'
-
+    if adverse == None:
+        adverse = ['']
+    else:
+        adverse = adverse.split(',') 
     wb.save('house_info.xlsx')
 
 # generate basement comments
@@ -1276,9 +1279,19 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     # at LOCATION 1 box
     if ownership == '0':
         keyboard.type('LOCATION')
-        tab(2)
+        tab(1)
+        if street_type == '1':
+            keyboard.type('Interior street')
+        elif street_type == '1':
+            keyboard.type('Main road')
+        elif street_type == '3':
+            keyboard.type('Commuter street')
+        tab(1)
         keyboard.type('LOCATION')
-        tab(2)
+        tab(1)
+        if freehold_location[2] == 'other residential lots':
+            keyboard.type('Back residential')
+        tab(1)
         keyboard.type('INTERIOR FINISHES')
     else:
         tab(4)
@@ -1417,7 +1430,6 @@ def assign_var():
 def full_report():
     result = ''
     print('Welcome')
-    #takes_info()
     #assign_var()
 
     input_excel()
@@ -1430,13 +1442,18 @@ def full_report():
     text_file.write(result)
     text_file.close()
 
-    #auto_input(basement_comments, interior_comments, sales_history_comments)
+    auto_input(basement_comments, interior_comments, sales_history_comments)
     print ('done')
+
+def sales_history_only():
+    input_excel()
+    print (sales_history())
 
 def main():
     global keyboard
     keyboard = Controller()
     full_report()
+    #sales_history_only()
     #------testing stuff----------
 
 
