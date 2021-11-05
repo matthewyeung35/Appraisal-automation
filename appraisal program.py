@@ -312,7 +312,7 @@ def input_excel():
 
 # generate basement comments
 def basement_comment_gen():
-    global basement_kitchen
+    global basement_kitchen, all_basement_int
     column_no = 'D'
     basement_kitchen = 0 
     if basement == '3':
@@ -332,6 +332,7 @@ def basement_comment_gen():
         basement_interior.extend(['family room', basement_rooms[0], 'den', basement_rooms[1], 'laundry room', basement_rooms[2], 'storage room', basement_rooms[3]])
         basement_rooms = ws[column_no+'44'].value.split(',')
         basement_interior.extend(['bedroom', basement_rooms[0] , 'full bathroom', basement_rooms[1], '2-piece bathroom', basement_rooms[2]])
+        all_basement_int = basement_interior
         # remove the room from list if 0 > no that type of room
         new_interior = []
         i = 0
@@ -382,6 +383,8 @@ def interior_info():
     storey_rooms = str(ws[column_no+'48'].value)
     if storey_rooms == '1':
         interior1.extend(['living room', '1', 'dining room', '1', 'kitchen', '1'])
+    else:
+        interior1.extend(['living room', '0', 'dining room', '0', 'kitchen', '0'])
     storey_rooms = ws[column_no+'49'].value.split(',')
     interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
     storey_rooms = ws[column_no+'50'].value.split(',')
@@ -398,6 +401,8 @@ def interior_info():
         storey_rooms = str(ws[column_no+'53'].value)
         if storey_rooms == '1':
             interior2.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
+        else:
+            interior2.extend(['living room', '0', 'dining room', '0', 'kitchen', '0'])
         storey_rooms = ws[column_no+'54'].value.split(',')
         if ownership == '1' and type == '3':
             interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'ensuite washer/dryer' , storey_rooms[3]])
@@ -416,11 +421,9 @@ def interior_info():
         interior3=[]
         storey_rooms = ws[column_no+'58'].value.split(',')
         interior3.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
-        print ('master bed/ average bed')
         storey_rooms = ws[column_no+'59'].value.split(',')
         total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
         interior3.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
-        print('ensuite/full/partial bathroom')
         storey_rooms = ws[column_no+'60'].value.split(',')
         total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
         total_partial += int(storey_rooms[2])
@@ -957,6 +960,10 @@ def all_flooring_gen():
     total_floor.sort(key = int)
     return floor_comment_gen(total_floor).capitalize()
 
+def table_enter(room):
+    if int(room)>0:
+        keyboard.type(str(room))
+
 # main function for auto input pdf
 def auto_input(basement_comments, interior_comments, sales_history_comments):
     global keyboard
@@ -1128,9 +1135,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         elif storey == '2':
             down(6)
         elif storey == ' 2 1/2':
-            down(7)
-        elif storey == '3':
             down(8)
+        elif storey == '3':
+            down(9)
         tab(2)
         if basement == '3':
             down(6)
@@ -1215,8 +1222,116 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type('Unknown; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus.')
     tab(1)
     # at interior table, first level entrance  
-    #TODO auto fill interior table?
-    tab(85)
+    # auto fill interior table
+    tab(1)
+    if interior1[3] != '1':
+        delete()
+        tab(1)
+        delete()
+        tab(1)
+        delete()
+        tab(1)
+    else:
+        tab(3)
+    enter()
+    #in floor 1bathroom
+    tab(1)
+    delete()
+    table_enter(interior1[25])
+    tab(2)
+    t_full = int(interior1[21]) + int(interior1[23])
+    table_enter(t_full)
+    enter()
+    tab(1)
+    t_bed = int(interior1[17]) + int(interior1[19])
+    table_enter(t_bed)
+    tab(1)
+    delete()
+    table_enter(interior1[9])
+    tab(1)
+    delete()
+    if interior1[15] == '1':
+        keyboard.type('x')
+    tab(13)
+    # at 2nd F living
+    if storey == '1' and type != '3':
+        tab(42)
+    else:
+        if interior2[1] == '1':
+            keyboard.type('1')
+            tab(1)
+            keyboard.type('1')
+            tab(1)
+            keyboard.type('1')
+            tab(1)
+        else:
+            tab(3)
+        enter()
+        tab(1)
+        table_enter(interior2[23])
+        tab(2)
+        t_full = int(interior2[19]) + int(interior2[21])
+        table_enter(t_full)
+        enter()
+        tab(1)
+        delete()
+        t_bed = int(interior2[15]) + int(interior2[17])
+        table_enter(t_bed)
+        tab(2)
+        if interior2[13] == '1':
+            keyboard.type('x')
+        tab(8)
+        # at third floor living
+        if storey == '2 1/2' or storey == '3':
+            tab(3)
+            enter()
+            tab(1)
+            table_enter(interior3[17])
+            tab(2)
+            t_full = int(interior3[13]) + int(interior3[15])
+            table_enter(t_full)
+            enter()
+            tab(1)
+            t_bed = int(interior3[9]) + int(interior3[11])
+            table_enter(t_bed)
+            tab(2)
+            if interior3[7] == '1':
+                keyboard.type('x')
+            tab(22)
+        else:
+            tab(28)
+    #at basement entrance
+    if basement != '3' and type != '3':
+        if all_basement_int[1] == '1':
+            keyboard.type('x')
+        tab(1)
+        table_enter(all_basement_int[3])
+        tab(1)
+        table_enter(all_basement_int[5])
+        tab(1)
+        table_enter(all_basement_int[7])
+        tab(1)
+        enter()
+        tab(1)
+        table_enter(all_basement_int[23])
+        tab(2)
+        table_enter(all_basement_int[21])
+        enter()
+        tab(1)
+        table_enter(all_basement_int[19])
+        tab(1)
+        table_enter(all_basement_int[11])
+        tab(1)
+        if all_basement_int[15] == '1':
+            keyboard.type('x')
+        tab(3)
+        table_enter(all_basement_int[9])
+        tab(13)
+    else:
+        tab(23)
+    time.sleep(5)
+    #-----------
+    #if dont want auto fill table, use: tab(85)
     # at cost approach table, garage
     if parking_no == '0':
         keyboard.type('None')
@@ -1251,11 +1366,11 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     if ownership == '0':
         keyboard.type('LOCATION')
         tab(1)
-        if street_type == '1':
+        if street_type == 'residential street':
             keyboard.type('Interior street')
-        elif street_type == '1':
+        elif street_type == 'main road':
             keyboard.type('Main road')
-        elif street_type == '3':
+        elif street_type == 'commuter street':
             keyboard.type('Commuter street')
         tab(1)
         keyboard.type('LOCATION')
@@ -1412,7 +1527,7 @@ def full_report():
     text_file = open("Output.txt", "w")
     text_file.write(result)
     text_file.close()
-
+    print ( interior1 , interior2, interior3)
     auto_input(basement_comments, interior_comments, sales_history_comments)
     print ('done')
 
