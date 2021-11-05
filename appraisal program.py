@@ -309,12 +309,11 @@ def input_excel():
         adverse = ['']
     else:
         adverse = adverse.split(',') 
-    wb.save('house_info.xlsx')
 
 # generate basement comments
 def basement_comment_gen():
-    print ('Basement')
     global basement_kitchen
+    column_no = 'D'
     basement_kitchen = 0 
     if basement == '3':
         return ('None; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
@@ -323,19 +322,15 @@ def basement_comment_gen():
         'It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
     else:
         basement_interior = []
-        print('separate entrance?')
-        basement_rooms = input()
+        basement_rooms = ws[column_no+'41'].value
         basement_interior.extend(['separate entrance', basement_rooms])
-        print('living/dining/kitchen')
-        basement_rooms = input().split(',')
+        basement_rooms = ws[column_no+'42'].value.split(',')
         if basement_rooms[2] == '1':
             basement_kitchen = 1
-        basement_interior.extend(['living room', basement_rooms[0] , 'dining room', basement_rooms[1], 'kitchen', basement_rooms[2]])
-        print('rec/family/den/laundry')
-        basement_rooms = input().split(',')
-        basement_interior.extend(['recreational room', basement_rooms[0] , 'family room', basement_rooms[1], 'den', basement_rooms[2], 'laundry room', basement_rooms[3]])
-        print('bed/full bath/2-piece bath')
-        basement_rooms = input().split(',')
+        basement_interior.extend(['living room', basement_rooms[0] , 'dining room', basement_rooms[1], 'kitchen', basement_rooms[2], 'recreational room', basement_rooms[3]])
+        basement_rooms = ws[column_no+'43'].value.split(',')
+        basement_interior.extend(['family room', basement_rooms[0], 'den', basement_rooms[1], 'laundry room', basement_rooms[2], 'storage room', basement_rooms[3]])
+        basement_rooms = ws[column_no+'44'].value.split(',')
         basement_interior.extend(['bedroom', basement_rooms[0] , 'full bathroom', basement_rooms[1], '2-piece bathroom', basement_rooms[2]])
         # remove the room from list if 0 > no that type of room
         new_interior = []
@@ -380,84 +375,61 @@ def basement_comment_gen():
 def interior_info():
     global interior1, interior2, interior3, total_bed, total_partial, total_bath, interior_finishes, exterior_finish, interior2_floor, interior1_floor, interior3_floor
     result = ('')
-    while True:
-        try:
-            print ('brick=0/stone=1/vinyl=2/concrete=3/stucco=4')
-            exterior_finish = input().split(',')
-            #for 1 storey
-            interior1 = ['foyer', '1']
-            print('first floor:')
-            print ('living+dining+kitchen? (0 or 1)')
-            storey_rooms = input()
-            if storey_rooms == '1':
-                interior1.extend(['living room', '1', 'dining room', '1', 'kitchen', '1'])
-            print ('family room/den/office/laundry')
-            storey_rooms = input().split(',')
-            interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
-            print ('master bed/ average bed')
-            storey_rooms = input().split(',')
-            total_bed = int(storey_rooms[0]) + int(storey_rooms[1])
-            interior1.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
-            print('ensuite/full/partial bathroom')
-            storey_rooms = input().split(',')
-            total_bath = int(storey_rooms[0]) + int(storey_rooms[1])
-            total_partial = int(storey_rooms[2])
-            interior1.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
-            print ('hardwood=0/broadloom=1/laminate=2/ceramic=3/')
-            interior1_floor = input().split(',')
-            # for 2 storey
-            if storey != '1':
-                interior2 = []
-                print('second floor:')
-                print ('living+dining+kitchen? (0 or 1)')
-                storey_rooms = input()
-                if storey_rooms == '1':
-                    interior2.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
-                if input == '1':
-                    interior2.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
-                print ('loft/den/office/laundry')
-                storey_rooms = input().split(',')
-                if ownership == '1' and type == '3':
-                    interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'ensuite washer/dryer' , storey_rooms[3]])
-                else:
-                    interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
-                print ('master bed/ average bed')
-                storey_rooms = input().split(',')
-                total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
-                interior2.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
-                print('ensuite/full/partial bathroom')
-                storey_rooms = input().split(',')
-                total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
-                total_partial += int(storey_rooms[2])
-                interior2.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
-                print ('hardwood=0/broadloom=1/laminate=2/ceramic=3/')
-                interior2_floor = input().split(',')
-            if storey == '2 1/2 ' or storey == '3':
-                interior3=[]
-                print('third floor:')
-                print ('loft/den/office/laundry')
-                storey_rooms = input().split(',')
-                interior3.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
-                print ('master bed/ average bed')
-                storey_rooms = input().split(',')
-                total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
-                interior3.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
-                print('ensuite/full/partial bathroom')
-                storey_rooms = input().split(',')
-                total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
-                total_partial += int(storey_rooms[2])
-                interior3.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
-                print ('hardwood=0/broadloom=1/ceramic=2/laminate=3')
-                interior3_floor = input().split(',')
-        except IndexError:
-            print ('Invalid input')
+    column_no = 'D'
+    exterior_finish = ws[column_no+'47'].value.split(',')
+    #for 1 storey
+    interior1 = ['foyer', '1']
+    storey_rooms = str(ws[column_no+'48'].value)
+    if storey_rooms == '1':
+        interior1.extend(['living room', '1', 'dining room', '1', 'kitchen', '1'])
+    storey_rooms = ws[column_no+'49'].value.split(',')
+    interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
+    storey_rooms = ws[column_no+'50'].value.split(',')
+    total_bed = int(storey_rooms[0]) + int(storey_rooms[1])
+    interior1.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
+    storey_rooms = ws[column_no+'51'].value.split(',')
+    total_bath = int(storey_rooms[0]) + int(storey_rooms[1])
+    total_partial = int(storey_rooms[2])
+    interior1.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
+    interior1_floor = ws[column_no+'52'].value.split(',')
+    # for 2 storey
+    if storey != '1':
+        interior2 = []
+        storey_rooms = str(ws[column_no+'53'].value)
+        if storey_rooms == '1':
+            interior2.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
+        storey_rooms = ws[column_no+'54'].value.split(',')
+        if ownership == '1' and type == '3':
+            interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'ensuite washer/dryer' , storey_rooms[3]])
         else:
-            break
+            interior2.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
+        storey_rooms = ws[column_no+'55'].value.split(',')
+        total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
+        interior2.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
+        storey_rooms = ws[column_no+'56'].value.split(',')
+        total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
+        total_partial += int(storey_rooms[2])
+        interior2.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
+        interior2_floor = ws[column_no+'57'].value.split(',')
+    # third floor
+    if storey == '2 1/2 ' or storey == '3':
+        interior3=[]
+        storey_rooms = ws[column_no+'58'].value.split(',')
+        interior3.extend(['loft', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
+        print ('master bed/ average bed')
+        storey_rooms = ws[column_no+'59'].value.split(',')
+        total_bed += int(storey_rooms[0]) + int(storey_rooms[1])
+        interior3.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
+        print('ensuite/full/partial bathroom')
+        storey_rooms = ws[column_no+'60'].value.split(',')
+        total_bath += int(storey_rooms[0]) + int(storey_rooms[1])
+        total_partial += int(storey_rooms[2])
+        interior3.extend(['full ensuite bathroom', storey_rooms[0] , 'full bathroom' , storey_rooms[1], '2-piece bathroom', storey_rooms[2]])
+        interior3_floor = ws[column_no+'61'].value.split(',')
 
     #interior finishes
-    print ('potlight/crown moulding?')
-    interior_finishes = input()
-  
+    interior_finishes = str(ws[column_no+'62'].value)
+
     #interior comment freehold
     # turn house type Det=0/Semi=1/Town=2 to names
     if type == '0':
@@ -508,11 +480,11 @@ def interior_info():
 
 #generate interior finishes comment
 def interior_finishes_gen(interior_finishes):
-    if interior_finishes == '0,1':
+    if interior_finishes == '1':
         return ('Interior upgrades include crown mouldings. ')
-    elif interior_finishes == '1,0':
+    elif interior_finishes == '0':
         return ('Interior upgrades include potlights. ')
-    elif interior_finishes == '1,1': 
+    elif interior_finishes == '0,1': 
         return ('Interior upgrades include potlights and crown mouldings. ')
     else:
         return ('')
@@ -985,7 +957,6 @@ def all_flooring_gen():
     total_floor.sort(key = int)
     return floor_comment_gen(total_floor).capitalize()
 
-
 # main function for auto input pdf
 def auto_input(basement_comments, interior_comments, sales_history_comments):
     global keyboard
@@ -1354,13 +1325,13 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(4)
     #delete()
     tab(1)
-    time.sleep(1)
+    time.sleep(3)
     tab(7)
     time.sleep(0.5)
     tab(12)
     time.sleep(0.5)
     tab(1)
-    time.sleep(0.2)
+    time.sleep(0.5)
     tab(1)
     enter()
     tab(1)
