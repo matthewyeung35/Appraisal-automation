@@ -155,113 +155,6 @@ def sales_history():
     result += ('\n\n')
     return result
  
-# OUTDATED Replaced by input_excel()
-# get property information
-def takes_info():
-    global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location, ownership_restriction_checkbox
-    print ('City?')
-    city = input().title()
-    print ('District')
-    district = input().title()
-    # type of property
-    print ('Free=0/condo=1?')
-    ownership = input()
-    while True:
-        print ('property type Det=0/Semi=1/Town=2/Apt=3/Stack=4?')
-        type = input()
-        if type == '0' and ownership == '1' or type == '1' and ownership =='1' or type =='3' and ownership =='0' or type == '4' and ownership == '0':
-            print ('Invalid input')
-        else:
-            break
-    #no. of storey
-    if type != '3':
-        print ('How many storey?')
-        storey = input()
-    else:
-        storey = '1'
-    if ownership == '1':
-        while True:
-            print ('Quadrant, Street1, Street2, end/corner/interior')
-            condo_location = input().split(',')
-            if len(condo_location) == 4:
-                break
-            else:
-                print ('invalid input')
-    if ownership == '0':
-        while True:
-            print ('lot shape, interior/end/corner, backing onto:')
-            freehold_location = input().split(',')
-            if len(freehold_location) == 3:
-                break
-            else:
-                print ('invalid input')
-    if ownership =='0' and type == '2':
-        print ('townhouse location interior=0/ end = 1?')
-        townhouse_location = input()
-        if townhouse_location == '0':
-            townhouse_location = 'interior'
-        elif townhouse_location == '1':
-            townhouse_location = 'end'
-    #street type
-    print ('Commercial=0/Residential=1/Main=2/Commuter=3 front street')
-    street_type = input()
-    if street_type == '0':
-        street_type = 'commercial street'
-    elif street_type == '1':
-        street_type = 'residential street'
-    elif street_type == '2':
-        street_type = 'main road'
-    elif street_type == '3':
-        street_type = 'commuter street'
-    # occupied?
-    print ('Owner=0/Tenant=1/Both=2/vacant=3')
-    occupy = input()
-    # parking
-    print ('Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6')
-    parking_type = input ()
-    print ('How many parking space?')
-    parking_no = input()
-    # basement
-    if type != '3':
-        print('finished=0/partly=1/unfin=2/none=3')
-        basement = input()
-    # adverse or no
-    print ('airport=0/railway=1/main=2/commuter=3/hydrolane=4/nuclear=5' )
-    adverse = input().split(',')
-    # ask for range if have airport/railway/lane/nuclear
-    adverse_range = []
-    if len(adverse[0]) != 0:
-        for i in adverse:
-            if i =='0':
-                print ('Airport range(KM)?')
-                adverse_range.append(input())
-            elif i =='1':
-                print ('Railway range(M)?')
-                adverse_range.append(input())
-            elif i == '2' or i == '3':
-                adverse_range.append('')
-            elif i =='4':
-                print ('Hydro lane range(M)?')
-                adverse_range.append(input())
-            elif i =='5':
-                print ('Nuclear range(KM)?')
-                adverse_range.append(input())
-                print ('Pickering=0/Darlington=1')
-                nuclear_station = input()
-    print ('Nearby park/school')
-    facilities = input()
-    print ('electric underground=0/overhead=1')
-    electric = input()
-    if electric == '0':
-        electric = 'underground'
-    else:
-        electric = 'overhead'
-    #lease required?
-    print ('leased required? y/n')
-    lease = input()
-    print ('extra ownership check box exist? y/n')
-    ownership_restriction_checkbox = input()
-
 # for taking subject data from excel sheet
 def input_excel():
     global ws, city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location, ownership_restriction_checkbox
@@ -1410,7 +1303,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     time.sleep(13)
     # start from page 5, final date
     tab(79)
-    time.sleep(4)
+    time.sleep(2)
     tab(13)
     time.sleep(1)
     tab(1)
@@ -1433,18 +1326,26 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(1)
     delete()
     keyboard.type('not inspected')
-    # at view property 
+    # at page 8 - view property (date) -NOT INSPECTED
     time.sleep(1)
     tab(3)
-    #delete()
+    delete()
     tab(4)
-    #delete()
+    delete()
     tab(1)
     time.sleep(3)
+    # at page9 
     tab(7)
     time.sleep(0.5)
-    tab(12)
-    time.sleep(0.5)
+    # at page 10 first image
+    tab(1)
+    down(11)
+    tab(2)
+    down(14)
+    tab(4)
+    down(12)
+    tab(5)
+    time.sleep(2)
     tab(1)
     time.sleep(0.5)
     tab(1)
@@ -1469,6 +1370,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(1)
     # finishes at page 3- highest use checkbox
 
+#---TRASH CODE-----
 # testing variables, not useful function
 def assign_var():
     global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type
@@ -1513,12 +1415,122 @@ def assign_var():
     interior1_floor, interior2_floor, interior3_floor = ['2','3'], ['1'], ['3']
     ownership_restriction_checkbox = 'n'
 
+# OUTDATED Replaced by input_excel()
+# get property information
+def takes_info():
+    global city, district, ownership, type, condo_location, occupy, adverse, facilities, townhouse_location, adverse_range, nuclear_station, street_type, storey, electric, parking_type, parking_no, lease, basement, freehold_location, ownership_restriction_checkbox
+    print ('City?')
+    city = input().title()
+    print ('District')
+    district = input().title()
+    # type of property
+    print ('Free=0/condo=1?')
+    ownership = input()
+    while True:
+        print ('property type Det=0/Semi=1/Town=2/Apt=3/Stack=4?')
+        type = input()
+        if type == '0' and ownership == '1' or type == '1' and ownership =='1' or type =='3' and ownership =='0' or type == '4' and ownership == '0':
+            print ('Invalid input')
+        else:
+            break
+    #no. of storey
+    if type != '3':
+        print ('How many storey?')
+        storey = input()
+    else:
+        storey = '1'
+    if ownership == '1':
+        while True:
+            print ('Quadrant, Street1, Street2, end/corner/interior')
+            condo_location = input().split(',')
+            if len(condo_location) == 4:
+                break
+            else:
+                print ('invalid input')
+    if ownership == '0':
+        while True:
+            print ('lot shape, interior/end/corner, backing onto:')
+            freehold_location = input().split(',')
+            if len(freehold_location) == 3:
+                break
+            else:
+                print ('invalid input')
+    if ownership =='0' and type == '2':
+        print ('townhouse location interior=0/ end = 1?')
+        townhouse_location = input()
+        if townhouse_location == '0':
+            townhouse_location = 'interior'
+        elif townhouse_location == '1':
+            townhouse_location = 'end'
+    #street type
+    print ('Commercial=0/Residential=1/Main=2/Commuter=3 front street')
+    street_type = input()
+    if street_type == '0':
+        street_type = 'commercial street'
+    elif street_type == '1':
+        street_type = 'residential street'
+    elif street_type == '2':
+        street_type = 'main road'
+    elif street_type == '3':
+        street_type = 'commuter street'
+    # occupied?
+    print ('Owner=0/Tenant=1/Both=2/vacant=3')
+    occupy = input()
+    # parking
+    print ('Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6')
+    parking_type = input ()
+    print ('How many parking space?')
+    parking_no = input()
+    # basement
+    if type != '3':
+        print('finished=0/partly=1/unfin=2/none=3')
+        basement = input()
+    # adverse or no
+    print ('airport=0/railway=1/main=2/commuter=3/hydrolane=4/nuclear=5' )
+    adverse = input().split(',')
+    # ask for range if have airport/railway/lane/nuclear
+    adverse_range = []
+    if len(adverse[0]) != 0:
+        for i in adverse:
+            if i =='0':
+                print ('Airport range(KM)?')
+                adverse_range.append(input())
+            elif i =='1':
+                print ('Railway range(M)?')
+                adverse_range.append(input())
+            elif i == '2' or i == '3':
+                adverse_range.append('')
+            elif i =='4':
+                print ('Hydro lane range(M)?')
+                adverse_range.append(input())
+            elif i =='5':
+                print ('Nuclear range(KM)?')
+                adverse_range.append(input())
+                print ('Pickering=0/Darlington=1')
+                nuclear_station = input()
+    print ('Nearby park/school')
+    facilities = input()
+    print ('electric underground=0/overhead=1')
+    electric = input()
+    if electric == '0':
+        electric = 'underground'
+    else:
+        electric = 'overhead'
+    #lease required?
+    print ('leased required? y/n')
+    lease = input()
+    print ('extra ownership check box exist? y/n')
+    ownership_restriction_checkbox = input()
+
+#---TRASH-----
+
 def full_report():
     result = ''
     print('Welcome')
     #assign_var()
-
+    #import excel sheet
     input_excel()
+    # generate long comments
     basement_comments = (basement_comment_gen())
     interior_comments = (interior_info())
     sales_history_comments = (sales_history())
@@ -1527,7 +1539,7 @@ def full_report():
     text_file = open("Output.txt", "w")
     text_file.write(result)
     text_file.close()
-    print ( interior1 , interior2, interior3)
+    # auto input data into pdf
     auto_input(basement_comments, interior_comments, sales_history_comments)
     print ('done')
 
@@ -1540,7 +1552,7 @@ def main():
     keyboard = Controller()
     full_report()
     #sales_history_only()
-    #------testing stuff----------
+
 
 
 if __name__ == "__main__":
