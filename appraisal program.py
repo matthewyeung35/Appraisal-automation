@@ -169,7 +169,7 @@ def input_excel():
     storey = str(ws[column_no+'6'].value)
     freehold_location = ws[column_no+'7'].value.split(',') 
     condo_location = ws[column_no+'8'].value.split(',') 
-    townhouse_location = ws[column_no+'9']
+    townhouse_location = ws[column_no+'9'].value
     street_type = str(ws[column_no+'10'].value)
     occupy = str(ws[column_no+'11'].value)
     parking_type = str(ws[column_no+'12'].value)
@@ -211,7 +211,7 @@ def basement_comment_gen():
     if basement == '3':
         return ('None; Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
     elif basement == '2':
-        return ('The basement is unfinished featuring a mech area.  Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. '
+        return ('The basement is unfinished consists of a mech area.  Interior not viewed by the appraiser at the request of the lender due to safety and health concerns impacted by the Co-Vid 19 Virus. '
         'It is unknown if there was water seepage at the time of appraisal. Appraisal is based on a sound foundation. \n\n')
     else:
         basement_interior = []
@@ -367,7 +367,7 @@ def interior_info():
         'We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
     elif ownership == '1' and type == '3':
         result += ('The subject is a {} bedroom condominium apartment {} unit containing approximately {} square feet of living space and is assumed to be in average physical condition at time of appraisal. '
-        'The floor plan consists of {}. Interior is finished with laminate flooring in the living room, dining room and bedrooms, ceramic tiles in the kitchen, bathroom and foyer. '
+        'The floor plan consists of {}Interior is finished with laminate flooring in the living room, dining room and bedrooms, ceramic tiles in the kitchen, bathroom and foyer. '
         'Interior finishes are standard and consistent with similar type units in the condominium complex. '. format(total_bed, condo_location[3], money_format(sqft), interior_room_gen(interior1)))
         result += interior_finishes_gen(interior_finishes)
         result += ('The effective age utilized in this appraisal report is based on the MLS listing and pictures provided by the homeowner. We have assumed the subject property being at least average condition and the norm for the area with other similar properties. ')
@@ -465,7 +465,7 @@ def interior_room_gen(interior):
                 result += (suffix + interior[i*2+3] + ' averaged sized bedroom featuring a full ensuite bathroom')
                 interior[i*2+1] = str(int(interior[i*2+1])-1)
             elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) > 1:
-                result += (suffix + interior[i*2+3] + ' averaged sized bedrooms featuring full ensuite bathroom')
+                result += (suffix + interior[i*2+3] + ' averaged sized bedrooms featuring full ensuite bathrooms')
                 interior[i*2+1] = str(int(interior[i*2+1])-int(interior[i*2+3]))
             #reformat bedroom name
             if interior[i*2] == 'bedroom':
@@ -520,13 +520,13 @@ def neighbour_site():
         'commercial, as well as condominium properties. The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size, and condition. Newly built condominium buildings are also noted in the area. '
         'Based on the average days on market on the recent MLS listings, the demands for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, '
         'the market trend in the immediate area was {} at the time of appraisal. '
-        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, city, demand, facilities_format()))
+        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, city.title(), demand, facilities_format()))
     else:
         #freehold neighbourhood
         result += ("Neighbourhood\nThe subject area is located within the MLS district known as '{}' in the City of {}. The neighbourhood is comprised of a mix of residential, commercial, as well as condominium properties. "
         'The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size and condition. Newer built condominium developments were also noted in the general area. '
         'Based on average days on market on the recent MLS listings, the demand for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, the market trend in the immediate area is considered increasing at the time of appraisal. '
-        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit{}. '.format(district, city, facilities_format()))
+        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit{}. '.format(district, city.title(), facilities_format()))
     adverse_comment = adverse_comment_gen()
     result += adverse_comment + ('\n\nSite\n')
     #condo townhouse site
@@ -605,7 +605,7 @@ def adverse_comment_gen():
         adverse_no = 0
         for i in adverse:
             if i == '0':
-                if city == 'Ottawa':
+                if city.title() == 'Ottawa':
                     result += ('Adversely, the subject property is situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Ottawa International Airport and is subject to higher air traffic noises during operational hours. ')
                 else:
                     result +=('Adversely, the subject property is situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Toronto Pearson Airport and is subject to higher air traffic noises during operational hours. ')
@@ -660,7 +660,7 @@ def adverse_comment_gen():
                 no_of_adverse -=1
                 # add adverse comments
                 if i == '0':
-                    if city == 'Ottawa':
+                    if city.title() == 'Ottawa':
                         result += ('situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Ottawa International Airport and is subject to higher air traffic noises during operational hours. ')
                     else:
                         result +=('situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Toronto Pearson Airport and is subject to higher air traffic noises during operational hours. ')
@@ -822,11 +822,12 @@ def depreciation_table(e_age):
         elif e_age == '5':
             result = '4'
         elif e_age == '10':
+
             result = '9'
         elif e_age == '15':
-            result == '15'
+            result = '15'
         else:
-            result == '21'
+            result = '21'
     # for non detached
     else:
         if e_age == '0' or e_age == '1' or e_age == '2'or e_age == '3':
@@ -836,7 +837,7 @@ def depreciation_table(e_age):
         elif e_age == '10':
             result = '11'
         else:
-            result == '17'
+            result = '17'
     return result
 
 # for page 4 all floring comment
@@ -865,7 +866,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     # seconds of prepare time
     time.sleep(3)
     # start from page3 - APPRAISER:
-    if city == 'Ottawa':
+    if city.title() == 'Ottawa':
         keyboard.type('Sindu R. Rajaruban')
     else:
         keyboard.type('Ruban Kanagenthiran')
@@ -1032,10 +1033,10 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         elif storey == '3':
             down(9)
         tab(2)
-        if basement == '3':
-            down(6)
-        else:
+        if city.title() == 'Ottawa':
             down(2)
+        if basement == '3':
+            down(4)
         tab(1)
         if basement == '0':
             down(3)
@@ -1048,7 +1049,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         down(2)
         tab(9)
     # stops at CONDITION bug
-    time.sleep(6)
+    time.sleep(8)
     tab(1)
     # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
     if exterior_finish == ['0']:
@@ -1057,6 +1058,8 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         down(4)
     elif exterior_finish == ['2']:
         down(13)
+    elif exterior_finish == ['3']:
+        down(16)
     tab(3)
     right(1)
     tab(1)
@@ -1073,12 +1076,15 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     if total_bath > 0:
         keyboard.type(str(total_bath))
     tab(19)
-    i_f = interior_finishes.split(',')
-    if i_f[1] == '1':
-        enter()
-    tab(2)
-    if i_f[0] == '1':
-        enter()
+    # ticking interior finish boxes
+    if interior_finishes != None:
+        if '1' in interior_finishes:
+            enter()
+        tab(2)
+        if '0' in interior_finishes:
+            enter()
+    else:
+        tab(2)
     tab(1)
     # starts at FLOORING
     delete()
@@ -1100,6 +1106,8 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type('None; Private asphalt-surfaced driveway')
     elif parking_type == '6':
         keyboard.type('None')
+    elif parking_type == '3':
+        keyboard.type(parking_no + ' Underground parking space')
     else:
         keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
     tab(2)
@@ -1147,7 +1155,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type('x')
     tab(13)
     # at 2nd F living
-    if storey == '1' and type != '3':
+    if storey == '1' or type == '3':
         tab(42)
     else:
         if interior2[1] == '1':
@@ -1162,7 +1170,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         enter()
         tab(1)
         table_enter(interior2[23])
-        tab(2)
+        tab(1)
+        delete()
+        tab(1)
         t_full = int(interior2[19]) + int(interior2[21])
         table_enter(t_full)
         enter()
@@ -1194,7 +1204,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         else:
             tab(28)
     #at basement entrance
-    if basement != '3' and type != '3':
+    if basement != '3' and type != '3' and basement != '2':
         if all_basement_int[1] == '1':
             keyboard.type('x')
         tab(1)
@@ -1259,12 +1269,18 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     if ownership == '0':
         keyboard.type('LOCATION')
         tab(1)
-        if street_type == 'residential street':
-            keyboard.type('Interior street')
-        elif street_type == 'main road':
-            keyboard.type('Main road')
-        elif street_type == 'commuter street':
-            keyboard.type('Commuter street')
+        if type == '2':
+            if townhouse_location == 'interior':
+                keyboard.type('Interior unit')
+            elif townhouse_location == 'end':
+                keyboard.type('End unit')
+        else: 
+            if street_type == 'residential street':
+                keyboard.type('Interior street')
+            elif street_type == 'main road':
+                keyboard.type('Main road')
+            elif street_type == 'commuter street':
+                keyboard.type('Commuter street')
         tab(1)
         keyboard.type('LOCATION')
         tab(1)
@@ -1274,7 +1290,12 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type('INTERIOR FINISHES')
     else:
         tab(4)
-    tab(75)
+    tab(46)
+    # GLA adjustment
+    enter()
+    keyboard.type(str(round(225*(1-int(depreciation_table(e_age))/100))))
+    enter()
+    tab(29)
     delete()
     keyboard.type('Please see addendum.')
     tab(1)
@@ -1317,7 +1338,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(2)
     tab(1)
     delete()
-    if city == 'Ottawa':
+    if city.title() == 'Ottawa':
         keyboard.type('1601-22')
     else:
         keyboard.type('1244-22')
