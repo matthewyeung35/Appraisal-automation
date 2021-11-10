@@ -994,8 +994,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(2)
     tab(2)
     # start at page 4 -CONSTRUCTION COMPLETE:
-    time.sleep(9)
-    enter()
+    time.sleep(10)
     enter()
     tab(2)
     keyboard.type(year_built)
@@ -1232,7 +1231,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         tab(13)
     else:
         tab(23)
-    time.sleep(5)
+    time.sleep(10)
     #-----------
     #if dont want auto fill table, use: tab(85)
     # at cost approach table, garage
@@ -1256,7 +1255,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(depreciation_table(e_age))
     tab(7)
     # at page 5- date of sale of subject
-    time.sleep(20)
+    time.sleep(25)
     tab(4)
     keyboard.type(year_built+ '/' + e_age)
     tab(1)
