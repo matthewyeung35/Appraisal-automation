@@ -96,7 +96,7 @@ def sales_history():
     global sales_history_length
     sales_history_length = 1
     column_no = 'D'
-    result = ('')
+    result = ('Sales History')
     # collect geowarehouse data
     geo_date = date_format(ws[column_no+'25'].value)
     geo_name = str(name_format(ws[column_no+'26'].value))
@@ -1320,7 +1320,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(13)
+    time.sleep(15)
     # start from page 5, final date
     tab(79)
     time.sleep(2)
