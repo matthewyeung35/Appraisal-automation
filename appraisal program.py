@@ -455,7 +455,7 @@ def interior_room_gen(interior):
         # only print comment if there is the room
         if interior[i*2] != 'full ensuite bathroom':
             # master bedroom with ensuite comments
-            if interior[i*2] == 'master bedroom' and interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) > 0:
+            if interior[i*2] == 'master bedroom' and (interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) or interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3])) > 0:
                 result += (suffix + 'master bedroom featuring a full ensuite bathroom')
                 interior[i*2+1] = str(int(interior[i*2+1])-1)
                 # remove ensuite count by 1, rest for average bedroom
@@ -948,32 +948,32 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         enter()
         tab(1)
         keyboard.type(park_comment)
-    #TODO for condo townhouse template, might have to make changes
+    #for condo townhouse template
+    #Attach=0/Builtin=1/Detach=2/Underg=3/Aboveg=4/None+Driveway=5/NoneNone=6 
     elif ownership == '1' and (type == '2' or type == '4'):
-        if parking_type == '6' or parking_type == '3' or parking_type == '4':
+        if parking_type == '0' or parking_type == '1' or parking_type == '2':
             enter()
         tab(1)
-        if parking_type == '3' or parking_type == '4':
+        if (parking_type != '3' and parking_type != '4'):
             enter()
         tab(2)     
-        if parking_type == '3' or parking_type == '4':
+        #at single
+        if (parking_type == '0' or parking_type == '1' or parking_type == '2') and int(parking_no) > 0:
             enter()
-            tab(2)
-        elif int(parking_no) > 1:
-            enter()
+            tab(4)
+        elif (parking_type == '0' or parking_type == '1' or parking_type == '2') and int(parking_no) > 1:
             tab(1)
             enter()
-            tab(1)
+            tab(3)
         else:
-            tab(2)
-        tab(2)
-        if parking_type == '3':
+            tab(4)
+        if parking_type != '3':
             enter()
         tab(7)
         if parking_type == '4' or parking_type == '5' or parking_type == '6':
             enter()
         tab(2)
-        if parking_type == '3' or parking_type == '6':
+        if parking_type != '3' and parking_type != '6' and parking_type != '4':
             enter()
         tab(3)
         keyboard.type(park_comment)
