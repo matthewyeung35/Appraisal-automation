@@ -96,7 +96,7 @@ def sales_history():
     global sales_history_length
     sales_history_length = 1
     column_no = 'D'
-    result = ('Sales History')
+    result = ('')
     # collect geowarehouse data
     geo_date = date_format(ws[column_no+'25'].value)
     geo_name = str(name_format(ws[column_no+'26'].value))
@@ -762,6 +762,12 @@ def tab(times):
         keyboard.press(Key.tab)
         keyboard.release(Key.tab)
 
+# press up for (times) - for box type input
+def up(times):
+    for _ in range(times):
+        keyboard.press(Key.up)
+        keyboard.release(Key.up)
+
 # press down for (times) - for box type input
 def down(times):
     for _ in range(times):
@@ -942,7 +948,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         enter()
         tab(1)
         keyboard.type(park_comment)
-    # for condo townhouse template, might have to make changes
+    #TODO for condo townhouse template, might have to make changes
     elif ownership == '1' and (type == '2' or type == '4'):
         if parking_type == '6' or parking_type == '3' or parking_type == '4':
             enter()
@@ -1047,6 +1053,27 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     elif ownership == '1' and type == '3':
         down(2)
         tab(9)
+    elif ownership == '1' and (type == '2' or type =='4'):
+        down(2)
+        tab(1)
+        down(3)
+        tab(1)
+        down(3)
+        tab(2)
+        if basement != '3':
+            up(4)
+            tab(1)
+            up(1)
+            if basement == '0':
+                down(2)
+            elif basement == '1':
+                down(3)
+            elif basement == '2':
+                down(4)
+            tab(4)
+        else:
+            tab(5)
+
     # stops at CONDITION bug
     time.sleep(8)
     tab(1)
@@ -1109,7 +1136,11 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type(parking_no + ' Underground parking space')
     else:
         keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
-    tab(2)
+    tab(1)
+    if ownership =='1' and (type =='2' or type =='4'):
+        delete()
+        keyboard.type("Concrete front porch,  steps,  pathway and patio at rear; ")
+    tab(1)
     delete()
     keyboard.type(interior_comments)
     tab(1)
@@ -1287,8 +1318,23 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             keyboard.type('Back residential')
         tab(1)
         keyboard.type('INTERIOR FINISHES')
+    elif ownership == '1' and (type =='2' or type == '4'):
+        delete()
+        keyboard.type('LOCATION')
+        tab(1)
+        if condo_location[3] == "interior":
+            keyboard.type('Interior unit')
+        elif condo_location[3] == "end":
+            keyboard.type('End unit')
+        tab(1)
+        keyboard.type('LOCATION')
+        tab(1)
+        keyboard.type('Back residential')
+        tab(1)
+        keyboard.type('INTERIOR FINISHES')
     else:
         tab(4)
+
     tab(46)
     # GLA adjustment
     enter()
@@ -1555,7 +1601,7 @@ def full_report():
     interior_comments = (interior_info())
     sales_history_comments = (sales_history())
     site_neighbourhood_comments = (neighbour_site())
-    result += basement_comments + interior_comments + sales_history_comments + site_neighbourhood_comments
+    result += basement_comments + interior_comments + ("Sales History\n") +sales_history_comments + site_neighbourhood_comments
     text_file = open("Output.txt", "w")
     text_file.write(result)
     text_file.close()
@@ -1565,7 +1611,7 @@ def full_report():
 
 def sales_history_only():
     input_excel()
-    print (sales_history())
+    print ("Sales History\n" + sales_history())
 
 def main():
     global keyboard
