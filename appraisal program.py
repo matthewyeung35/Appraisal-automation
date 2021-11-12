@@ -1204,7 +1204,14 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(13)
     # at 2nd F living
     if storey == '1' or type == '3':
-        tab(42)
+        tab(3)
+        enter()
+        tab(3)
+        delete()
+        enter()
+        tab(1)
+        delete()
+        tab(38)
     else:
         if interior2[1] == '1':
             keyboard.type('1')
@@ -1384,14 +1391,14 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(17)
+    time.sleep(16)
     # start from page 5, final date
     tab(79)
-    time.sleep(2)
+    time.sleep(3)
     tab(13)
-    time.sleep(1)
+    time.sleep(1.5)
     tab(1)
-    time.sleep(0.5)
+    time.sleep(1)
     enter()
     tab(3)
     right(1)
@@ -1411,16 +1418,16 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     delete()
     keyboard.type('not inspected')
     # at page 8 - view property (date) -NOT INSPECTED
-    time.sleep(2)
+    time.sleep(3)
     tab(3)
     delete()
     tab(4)
     delete()
     tab(1)
-    time.sleep(3)
+    time.sleep(4)
     # at page9 
     tab(7)
-    time.sleep(0.5)
+    time.sleep(1)
     # at page 10 first image
     tab(1)
     down(11)
@@ -1431,7 +1438,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(5)
     time.sleep(2)
     tab(1)
-    time.sleep(0.5)
+    time.sleep(1)
     tab(1)
     enter()
     tab(1)
@@ -1447,7 +1454,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(8)
     time.sleep(1)
     tab(1)
-    time.sleep(0.2)
+    time.sleep(1)
     tab(4)
     if ownership_restriction_checkbox == 'y':
         tab(1)
