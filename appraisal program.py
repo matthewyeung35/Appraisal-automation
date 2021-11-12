@@ -455,11 +455,26 @@ def interior_room_gen(interior):
         # only print comment if there is the room
         if interior[i*2] != 'full ensuite bathroom':
             # master bedroom with ensuite comments
-            if interior[i*2] == 'master bedroom' and (interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) or interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3])) > 0:
-                result += (suffix + 'master bedroom featuring a full ensuite bathroom')
-                interior[i*2+1] = str(int(interior[i*2+1])-1)
-                # remove ensuite count by 1, rest for average bedroom
-                interior[i*2+5] = str(int(interior[i*2+5])-1)
+            if interior[i*2] == 'master bedroom' :
+                try:
+                    if interior[i*2+4] == 'full ensuite bathroom' and int(interior[i*2+5]) > 0:
+                        result += (suffix + 'master bedroom featuring a full ensuite bathroom')
+                        interior[i*2+1] = str(int(interior[i*2+1])-1)
+                        # remove ensuite count by 1, rest for average bedroom
+                        interior[i*2+5] = str(int(interior[i*2+5])-1)
+                except IndexError:
+                    pass
+                try:
+                    if interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) > 0:
+                        result += (suffix + 'master bedroom featuring a full ensuite bathroom')
+                        interior[i*2+1] = str(int(interior[i*2+1])-1)
+                        # remove ensuite count by 1, rest for average bedroom
+                        interior[i*2+5] = str(int(interior[i*2+3])-1)
+                except IndexError:
+                    pass
+                if interior[i*2+1] == '1':
+                    result += (suffix + 'master bedroom')
+                    interior[i*2+1] = str(int(interior[i*2+1])-1)
             #average bedroom with ensuite comments
             elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) == 1:
                 result += (suffix + interior[i*2+3] + ' averaged sized bedroom featuring a full ensuite bathroom')
@@ -932,10 +947,13 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             enter()
             tab(1)
             enter()
+            tab(4)
+        elif parking_type == '6':
             tab(1)
+            enter()
+            tab(4)
         else:
-            tab(2)
-        tab(3)
+            tab(5)
         if parking_type != '6':
             enter()
         tab(6)
@@ -1366,7 +1384,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(15)
+    time.sleep(17)
     # start from page 5, final date
     tab(79)
     time.sleep(2)
@@ -1393,7 +1411,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     delete()
     keyboard.type('not inspected')
     # at page 8 - view property (date) -NOT INSPECTED
-    time.sleep(1)
+    time.sleep(2)
     tab(3)
     delete()
     tab(4)
