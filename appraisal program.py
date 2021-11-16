@@ -581,7 +581,10 @@ def neighbour_site():
         "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto {}. "
         'The lot is improved with a {} storey {} dwelling{}The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'Site improvements include covered concrete porch, pathways and a patio at rear. The subject site features fully fenced backyard and average and similar landscaping in comparison to other properties in the area. '
-        'The subject property existing use is residential single family and it is the opinion of the appraiser that this activity constitutes the highest and best use. '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
+        'The subject property existing use is residential single family '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
+        if basement_kitchen == '1':
+            result+='with self contained basement unit '
+        result+='and it is the opinion of the appraiser that this activity constitutes the highest and best use. '
     result += adverse_comment
 
     #basement kitchen comment
@@ -954,7 +957,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             tab(4)
         else:
             tab(5)
-        if parking_type != '6':
+        if parking_type == '6':
             enter()
         tab(6)
         if parking_type == '5' or parking_type == '6':
@@ -1206,7 +1209,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     if storey == '1' or type == '3':
         tab(3)
         enter()
-        tab(3)
+        tab(2)
+        delete()
+        tab(1)
         delete()
         enter()
         tab(1)
@@ -1438,7 +1443,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(5)
     time.sleep(2)
     tab(1)
-    time.sleep(1)
+    time.sleep(4)
     tab(1)
     enter()
     tab(1)
@@ -1632,7 +1637,6 @@ def full_report():
     text_file.close()
     # auto input data into pdf
     auto_input(basement_comments, interior_comments, sales_history_comments)
-    print ('done')
 
 def sales_history_only():
     input_excel()
@@ -1643,6 +1647,7 @@ def main():
     keyboard = Controller()
     full_report()
     #sales_history_only()
+    print ('done')
 
 
 
