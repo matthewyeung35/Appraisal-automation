@@ -1636,7 +1636,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    auto_input(basement_comments, interior_comments, sales_history_comments)
+    #auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()
