@@ -1021,7 +1021,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(2)
     tab(2)
     # start at page 4 -CONSTRUCTION COMPLETE:
-    time.sleep(10)
+    time.sleep(20)
     enter()
     tab(2)
     keyboard.type(year_built)
@@ -1096,7 +1096,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             tab(5)
 
     # stops at CONDITION bug
-    time.sleep(8)
+    time.sleep(15)
     tab(1)
     # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
     if exterior_finish == ['0']:
@@ -1292,7 +1292,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         tab(13)
     else:
         tab(23)
-    time.sleep(10)
+    time.sleep(20)
     #-----------
     #if dont want auto fill table, use: tab(85)
     # at cost approach table, garage
@@ -1316,7 +1316,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(depreciation_table(e_age))
     tab(7)
     # at page 5- date of sale of subject
-    time.sleep(25)
+    time.sleep(30)
     tab(4)
     keyboard.type(year_built+ '/' + e_age)
     tab(1)
@@ -1396,14 +1396,14 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(16)
+    time.sleep(20)
     # start from page 5, final date
     tab(79)
-    time.sleep(3)
+    time.sleep(5)
     tab(13)
-    time.sleep(1.5)
+    time.sleep(4)
     tab(1)
-    time.sleep(1)
+    time.sleep(3)
     enter()
     tab(3)
     right(1)
@@ -1423,7 +1423,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     delete()
     keyboard.type('not inspected')
     # at page 8 - view property (date) -NOT INSPECTED
-    time.sleep(3)
+    time.sleep(5)
     tab(3)
     delete()
     tab(4)
