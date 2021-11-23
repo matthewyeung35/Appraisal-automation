@@ -582,7 +582,7 @@ def neighbour_site():
         'The lot is improved with a {} storey {} dwelling{}The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'Site improvements include covered concrete porch, pathways and a patio at rear. The subject site features fully fenced backyard and average and similar landscaping in comparison to other properties in the area. '
         'The subject property existing use is residential single family '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
-        if basement_kitchen == '1':
+        if basement_kitchen == 1:
             result+='with self contained basement unit '
         result+='and it is the opinion of the appraiser that this activity constitutes the highest and best use. '
     result += adverse_comment
@@ -765,6 +765,31 @@ def facilities_format():
     else:
         return facilities
 
+# generate city and region for page3
+def city_comment_gen():
+    result = ""
+    if city.title() == "Ottawa":
+        result = "City of Ottawa;"
+    elif city.title() == "Toronto":
+        result = "City of Toronto;"
+    elif city.title() == "Brampton":
+        result = "Region of Peel; City of Brampton"
+    elif city.title() == "Mississauga":
+        result = "Region of Peel; City of Missisauga"
+    elif city.title() == "Pickering":
+        result = "Region of Durham; City of Missisauga"
+    elif city.title() == "Oshawa":
+        result = "Region of Durham; Town of Oshawa"
+    elif city.title() == "Whitby":
+        result = "Region of Durham; Town of Whitby"
+    elif city.title() == "Ajax":
+        result = "Region of Durham; Town of Ajax"
+    elif city.title() == "Markham":
+        result = "Region of York; City of Markham"
+    elif city.title() == "Vaughan":
+        result = "Region of York; City of Vaughan"
+    return result
+
 #----auto input codes--------
 # delete everything in box
 def delete():
@@ -903,7 +928,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         down(2)
     else:
         down(6)
-    tab(15)
+    tab(5)
+    keyboard.type(city_comment_gen())
+    tab(10)
     # Occupied by:
     if occupy == '0':
         down(2)
@@ -1021,7 +1048,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(2)
     tab(2)
     # start at page 4 -CONSTRUCTION COMPLETE:
-    time.sleep(20)
+    time.sleep(12)
     enter()
     tab(2)
     keyboard.type(year_built)
@@ -1096,7 +1123,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             tab(5)
 
     # stops at CONDITION bug
-    time.sleep(15)
+    time.sleep(8)
     tab(1)
     # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
     if exterior_finish == ['0']:
@@ -1292,7 +1319,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         tab(13)
     else:
         tab(23)
-    time.sleep(20)
+    time.sleep(12)
     #-----------
     #if dont want auto fill table, use: tab(85)
     # at cost approach table, garage
@@ -1316,7 +1343,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(depreciation_table(e_age))
     tab(7)
     # at page 5- date of sale of subject
-    time.sleep(30)
+    time.sleep(15)
     tab(4)
     keyboard.type(year_built+ '/' + e_age)
     tab(1)
@@ -1396,14 +1423,14 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     keyboard.type(str(datetime.date(datetime.now())))
     tab(6)
     keyboard.type(str(datetime.date(datetime.now())))
-    time.sleep(20)
+    time.sleep(18)
     # start from page 5, final date
     tab(79)
-    time.sleep(5)
+    time.sleep(1)
     tab(13)
-    time.sleep(4)
+    time.sleep(1)
     tab(1)
-    time.sleep(3)
+    time.sleep(1)
     enter()
     tab(3)
     right(1)
@@ -1423,13 +1450,13 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     delete()
     keyboard.type('not inspected')
     # at page 8 - view property (date) -NOT INSPECTED
-    time.sleep(5)
+    time.sleep(1)
     tab(3)
     delete()
     tab(4)
     delete()
     tab(1)
-    time.sleep(4)
+    time.sleep(1)
     # at page9 
     tab(7)
     time.sleep(1)
@@ -1441,9 +1468,9 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     tab(4)
     down(12)
     tab(5)
-    time.sleep(2)
+    time.sleep(1)
     tab(1)
-    time.sleep(4)
+    time.sleep(1)
     tab(1)
     enter()
     tab(1)
@@ -1636,7 +1663,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    #auto_input(basement_comments, interior_comments, sales_history_comments)
+    auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()

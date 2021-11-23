@@ -3,58 +3,38 @@ from datetime import datetime
 from openpyxl import load_workbook
 
 import time
-# delete everything in box
-def delete():
-    keyboard.press(Key.ctrl)
-    keyboard.type('a')
-    keyboard.release(Key.ctrl)
-    keyboard.press(Key.delete)
-    keyboard.release(Key.delete)
-
-# press tab for (times)
-def tab(times):
-    for _ in range(times):
-        keyboard.press(Key.tab)
-        keyboard.release(Key.tab)
-
-# press down for (times) - for box type input
-def down(times):
-    for _ in range(times):
-        keyboard.press(Key.down)
-        keyboard.release(Key.down)
-
-# press right for (times)
-def right(times):
-    for _ in range(times):
-        keyboard.press(Key.right)
-        keyboard.release(Key.right)
-
-# press right for (times)
-def left(times):
-    for _ in range(times):
-        keyboard.press(Key.left)
-        keyboard.release(Key.left)
-
-# press enter single time
-def enter():
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
-
-#for page 4 interior table, enter room count if room exists
-def table_enter(room):
-    if int(room)>0:
-        keyboard.type(str(room))
-
+# generate city and region for page3
+def city_comment_gen():
+    result = ""
+    if city.title() == "Ottawa":
+        result = "City of Ottawa;"
+    elif city.title() == "Toronto":
+        result = "City of Toronto;"
+    elif city.title() == "Brampton":
+        result = "Region of Peel; City of Brampton"
+    elif city.title() == "Mississauga":
+        result = "Region of Peel; City of Missisauga"
+    elif city.title() == "Pickering":
+        result = "Region of Durham; City of Missisauga"
+    elif city.title() == "Oshawa":
+        result = "Region of Durham; Town of Oshawa"
+    elif city.title() == "Whitby":
+        result = "Region of Durham; Town of Whitby"
+    elif city.title() == "Ajax":
+        result = "Region of Durham; Town of Ajax"
+    elif city.title() == "Markham":
+        result = "Region of York; City of Markham"
+    elif city.title() == "Vaughan":
+        result = "Region of York; City of Vaughan"
+    return result
 def main():
-    global keyboard
-    interior_finishes = None
-    if interior_finishes != None:
-        if '1' in interior_finishes:
-            print ('tick')
-    #-----------
-    #if dont want auto fill table, use: tab(85)
-    # at cost approach table, garage
-    #['separate entrance', '0', 'living room', '0', 'dining room', '0', 'kitchen', '0', 'recreational room', '1', 'family room', '0', 'den', '0', 'laundry room', '1', 'storage room', '1', 'bedroom', '0', 'full bathroom', '1', '2-piece bathroom', '0']
+    global city
+    city = "brampton"
+    print (city_comment_gen())
+
+
+
 if __name__ == "__main__":
     main()
+
 
