@@ -531,17 +531,17 @@ def neighbour_site():
         demand ='increasing'
     #condo neighourhood
     if ownership == '1':
-        result += ("Neighbourhood\nThe subject area is located within the {} quadrant of {} and {}, in the MLS district known as '{}' in the City of {}. The neighbourhood is comprised of a mix of residential, "
+        result += ("Neighbourhood\nThe subject area is located within the {} quadrant of {} and {}, in the MLS district known as '{}' in the {}. The neighbourhood is comprised of a mix of residential, "
         'commercial, as well as condominium properties. The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size, and condition. Newly built condominium buildings are also noted in the area. '
         'Based on the average days on market on the recent MLS listings, the demands for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, '
         'the market trend in the immediate area was {} at the time of appraisal. '
-        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, city.title(), demand, facilities_format()))
+        "The subject is in close proximity to local area shopping centres, {}, public transit, public schools, and parks. ".format(condo_location[0], condo_location[1], condo_location[2], district, neighbourhood_city(), demand, facilities_format()))
     else:
         #freehold neighbourhood
-        result += ("Neighbourhood\nThe subject area is located within the MLS district known as '{}' in the City of {}. The neighbourhood is comprised of a mix of residential, commercial, as well as condominium properties. "
+        result += ("Neighbourhood\nThe subject area is located within the MLS district known as '{}' in the {}. The neighbourhood is comprised of a mix of residential, commercial, as well as condominium properties. "
         'The immediate area consists mainly of residential established properties ranging up to _ years old in varying age, size and condition. Newer built condominium developments were also noted in the general area. '
         'Based on average days on market on the recent MLS listings, the demand for properties in this neighborhood is considered average to good. Based on research on recent MLS listings, the market trend in the immediate area is considered increasing at the time of appraisal. '
-        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit{}. '.format(district, city.title(), facilities_format()))
+        'The subject property is located in close proximity to local area shopping, places of worship, public parks, schools, public transit{}. '.format(district, neighbourhood_city(), facilities_format()))
     adverse_comment = adverse_comment_gen()
     result += adverse_comment + ('\n\nSite\n')
     #condo townhouse site
@@ -671,7 +671,6 @@ def adverse_comment_gen():
             adverse_no = 0
             result += ('Adversely, the subject property is ')
             for i in adverse:
-                print (no_of_adverse)
                 # if more than 1 adverse
                 if no_of_adverse < len(adverse) and not (i == '1' and (adverse_range[adverse_no] == '1000' or adverse_range[adverse_no] == '1')):
                     result += ('The subject property is also ')
@@ -698,7 +697,8 @@ def adverse_comment_gen():
                         result += ('situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Pickering Nuclear Generating Station. ')
                     else :
                         result += ('situated within ' + adverse_distance_convert(adverse_range[adverse_no]) + ' of Darlington Nuclear Generating Station. ')
-                adverse_no +=1
+                if i!='2' and i!='3':
+                    adverse_no +=1
             result += ('See plot map. ')
     return result
 
@@ -764,7 +764,15 @@ def facilities_format():
             return (' and ') + facilities
     else:
         return facilities
-
+# generate city for neighbourhood comment
+def neighbourhood_city():
+    result = ""
+    if city.title() == "Ajax" or city.title() == "Whitby":
+        result = "Town of " + city.title()
+    else:
+        result = "City of " + city.title()
+    return result
+    
 # generate city and region for page3
 def city_comment_gen():
     result = ""
@@ -779,7 +787,7 @@ def city_comment_gen():
     elif city.title() == "Pickering":
         result = "Region of Durham; City of Missisauga"
     elif city.title() == "Oshawa":
-        result = "Region of Durham; Town of Oshawa"
+        result = "Region of Durham; City of Oshawa"
     elif city.title() == "Whitby":
         result = "Region of Durham; Town of Whitby"
     elif city.title() == "Ajax":
@@ -1645,7 +1653,7 @@ def takes_info():
     print ('extra ownership check box exist? y/n')
     ownership_restriction_checkbox = input()
 
-#---TRASH-----
+#---TRASH ^-----
 
 def full_report():
     result = ''
