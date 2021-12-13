@@ -293,7 +293,7 @@ def interior_info():
         interior2 = []
         storey_rooms = str(ws[column_no+'53'].value)
         if storey_rooms == '1':
-            interior2.extend(['living', '1', 'dining', '1', 'kitchen', '1'])
+            interior2.extend(['living room', '1', 'dining room', '1', 'kitchen', '1'])
         else:
             interior2.extend(['living room', '0', 'dining room', '0', 'kitchen', '0'])
         storey_rooms = ws[column_no+'54'].value.split(',')
@@ -654,10 +654,11 @@ def adverse_comment_gen():
     else :
     # non apt adverse
         adverse_no = 0
+        print (len(adverse))
         # for out of range railway, no adverse
         if len(adverse) == 1 and adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1'):
             result += ('Railroad tracks were also noted within the general area of the subject property. ')
-        if (len(adverse) == 1 and (adverse[0] not in ['0','1','2','3','4','5'])) or (adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1')):
+        if len(adverse) == 1 and (adverse[0] not in ['0','1','2','3','4','5'] or adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1')):
             result += ('The Appraiser did not notice any functional or external obsolescence at the time of the site visit. ')
         else:
             no_of_adverse = len(adverse)
@@ -777,7 +778,7 @@ def neighbourhood_city():
 def city_comment_gen():
     result = ""
     if city.title() == "Ottawa":
-        result = "City of Ottawa;"
+        result = "City of Ottawa;?"
     elif city.title() == "Toronto":
         result = "City of Toronto;"
     elif city.title() == "Brampton":
@@ -1025,13 +1026,19 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             tab(4)
         if parking_type != '3':
             enter()
-        tab(7)
+        tab(1)
+        if parking_type == '5':
+            enter()
+        tab(6)
         if parking_type == '4' or parking_type == '5' or parking_type == '6':
             enter()
         tab(2)
         if parking_type != '3' and parking_type != '6' and parking_type != '4':
             enter()
-        tab(3)
+        tab(2)
+        if parking_type == '5':
+            enter()
+        tab(1)
         keyboard.type(park_comment)
     elif ownership == '1' and type == '3':
         tab(1)
@@ -1056,7 +1063,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     right(2)
     tab(2)
     # start at page 4 -CONSTRUCTION COMPLETE:
-    time.sleep(12)
+    time.sleep(8)
     enter()
     tab(2)
     keyboard.type(year_built)
@@ -1131,7 +1138,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
             tab(5)
 
     # stops at CONDITION bug
-    time.sleep(8)
+    time.sleep(6)
     tab(1)
     # at exterior finish: brick=0/stone=1/vinyl=2/concrete=3/stucco=4 (a list)
     if exterior_finish == ['0']:
@@ -1331,24 +1338,27 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     #-----------
     #if dont want auto fill table, use: tab(85)
     # at cost approach table, garage
-    if parking_no == '0':
-        keyboard.type('None')
+    if ownership == '0':
+        if parking_no == '0':
+            keyboard.type('None')
+        else:
+            keyboard.type(parking_no + ' car garage')
+        tab(4)
+        if basement == '0':
+            keyboard.type('Fully finished')
+        elif basement == '1':
+            keyboard.type('Partly finished')
+        elif basement == '2':
+            keyboard.type('Unfinished')
+        elif basement == '3':
+            keyboard.type('None')
+        tab(6)
+        delete()
+        tab(7)
+        delete()
+        keyboard.type(depreciation_table(e_age))
     else:
-        keyboard.type(parking_no + ' car garage')
-    tab(4)
-    if basement == '0':
-        keyboard.type('Fully finished')
-    elif basement == '1':
-        keyboard.type('Partly finished')
-    elif basement == '2':
-        keyboard.type('Unfinished')
-    elif basement == '3':
-        keyboard.type('None')
-    tab(6)
-    delete()
-    tab(7)
-    delete()
-    keyboard.type(depreciation_table(e_age))
+        tab(17)
     tab(7)
     # at page 5- date of sale of subject
     time.sleep(15)
