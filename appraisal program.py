@@ -1197,6 +1197,8 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type('None')
     elif parking_type == '3':
         keyboard.type(parking_no + ' Underground parking space')
+    elif parking_type == '4':
+        keyboard.type(parking_no + ' Surface parking space')
     else:
         keyboard.type(parking_no + ' car garage; Private asphalt-surfaced driveway')
     tab(1)
@@ -1275,6 +1277,7 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         tab(1)
         delete()
         tab(1)
+        delete()
         t_full = int(interior2[19]) + int(interior2[21])
         table_enter(t_full)
         enter()
