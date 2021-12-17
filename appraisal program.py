@@ -476,12 +476,16 @@ def interior_room_gen(interior):
                     result += (suffix + 'master bedroom')
                     interior[i*2+1] = str(int(interior[i*2+1])-1)
             #average bedroom with ensuite comments
-            elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) == 1:
-                result += (suffix + interior[i*2+3] + ' averaged sized bedroom featuring a full ensuite bathroom')
-                interior[i*2+1] = str(int(interior[i*2+1])-1)
-            elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) > 1:
-                result += (suffix + interior[i*2+3] + ' averaged sized bedrooms featuring full ensuite bathrooms')
-                interior[i*2+1] = str(int(interior[i*2+1])-int(interior[i*2+3]))
+            else:
+                try:
+                    if interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) == 1:
+                        result += (suffix + interior[i*2+3] + ' averaged sized bedroom featuring a full ensuite bathroom')
+                        interior[i*2+1] = str(int(interior[i*2+1])-1)
+                    elif interior[i*2] == 'bedroom' and interior[i*2+2] == 'full ensuite bathroom' and int(interior[i*2+3]) > 1:
+                        result += (suffix + interior[i*2+3] + ' averaged sized bedrooms featuring full ensuite bathrooms')
+                        interior[i*2+1] = str(int(interior[i*2+1])-int(interior[i*2+3]))
+                except IndexError:
+                    pass
             #reformat bedroom name
             if interior[i*2] == 'bedroom':
                 interior[i*2] = 'average sized bedroom'
@@ -654,7 +658,6 @@ def adverse_comment_gen():
     else :
     # non apt adverse
         adverse_no = 0
-        print (len(adverse))
         # for out of range railway, no adverse
         if len(adverse) == 1 and adverse[0] == '1' and (adverse_range[0] == '1000' or adverse_range[0] == '1'):
             result += ('Railroad tracks were also noted within the general area of the subject property. ')
