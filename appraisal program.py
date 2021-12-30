@@ -203,6 +203,10 @@ def input_excel():
     else:
         adverse = adverse.split(',') 
 
+    #always 1 storey for apartment
+    if type == '3':
+        storey = '1'
+
 # generate basement comments
 def basement_comment_gen():
     global basement_kitchen, all_basement_int
