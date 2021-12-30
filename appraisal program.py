@@ -855,19 +855,19 @@ def enter():
 
 # for page 4 effective age
 def effective_age():
-    if year_built == '2021':
+    if year_built == '2022':
         e_age = '0'
-    elif year_built >= '2019':
+    elif year_built >= '2020':
         e_age = '1'
-    elif year_built >= '2017':
+    elif year_built >= '2018':
         e_age = '2'
-    elif year_built >= '2015':
+    elif year_built >= '2016':
         e_age = '3'
-    elif year_built >= '2006':
+    elif year_built >= '2007':
         e_age = '5'
-    elif year_built >= '1996':
+    elif year_built >= '1997':
         e_age = '10'
-    elif type != '0' or year_built >= '1986':
+    elif type != '0' or year_built >= '1987':
         e_age = '15'
     else:
         e_age = '20'
