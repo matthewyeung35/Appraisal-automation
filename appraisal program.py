@@ -283,7 +283,10 @@ def interior_info():
     else:
         interior1.extend(['living room', '0', 'dining room', '0', 'kitchen', '0'])
     storey_rooms = ws[column_no+'49'].value.split(',')
-    interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
+    if ownership == '1' and type == '3':
+        interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'ensuite washer/dryer' , storey_rooms[3]])
+    else:
+        interior1.extend(['family room', storey_rooms[0] , 'den' , storey_rooms[1] , 'office' , storey_rooms[2] , 'laundry room' , storey_rooms[3]])
     storey_rooms = ws[column_no+'50'].value.split(',')
     total_bed = int(storey_rooms[0]) + int(storey_rooms[1])
     interior1.extend(['master bedroom', storey_rooms[0] , 'bedroom' , storey_rooms[1]])
@@ -787,7 +790,7 @@ def city_comment_gen():
     if city.title() == "Ottawa":
         result = "City of Ottawa;?"
     elif city.title() == "Toronto":
-        result = "City of Toronto;"
+        result = "City of Toronto;?"
     elif city.title() == "Brampton":
         result = "Region of Peel; City of Brampton"
     elif city.title() == "Mississauga":
