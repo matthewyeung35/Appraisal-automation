@@ -938,7 +938,11 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
         keyboard.type('Sindu R. Rajaruban')
     else:
         keyboard.type('Ruban Kanagenthiran')
-    tab(12)
+    tab(2)
+    if city.title() == "Ottawa":
+        delete()
+        keyboard.type("N/A")
+    tab(10)
     enter()
     tab(2)
     enter()
