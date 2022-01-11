@@ -942,7 +942,14 @@ def auto_input(basement_comments, interior_comments, sales_history_comments):
     if city.title() == "Ottawa":
         delete()
         keyboard.type("N/A")
-    tab(10)
+        tab(2)
+        keyboard.type("Ottawa")
+        tab(1)
+        keyboard.type("o")
+        enter()
+        tab(7)
+    else:
+        tab(10)
     enter()
     tab(2)
     enter()
