@@ -134,7 +134,7 @@ def sales_history():
             elif sold_price == 'can':
                     result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was cancelled after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))
             elif sold_price == 'sus':
-                result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was suspeneded after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))
+                result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was suspended after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))
             elif sold_price == 'exp':
                 result += ('As per MLS#{}, the subject property was listed on {} with an asking price of ${} and later was expired after being on the market for {} days. \n'.format(mls_no, mls_date, listing_price, dom))           
             elif sold_price == 'act':
@@ -794,9 +794,9 @@ def city_comment_gen():
     elif city.title() == "Brampton":
         result = "Region of Peel; City of Brampton"
     elif city.title() == "Mississauga":
-        result = "Region of Peel; City of Missisauga"
+        result = "Region of Peel; City of Mississauga"
     elif city.title() == "Pickering":
-        result = "Region of Durham; City of Missisauga"
+        result = "Region of Durham; City of Pickering"
     elif city.title() == "Oshawa":
         result = "Region of Durham; City of Oshawa"
     elif city.title() == "Whitby":
