@@ -42,8 +42,6 @@ def date_format(date):
         date[2] = '1'
     elif date[2] == '02':
         date[2] = '2'
-    elif date[2] == '02':
-        date[2] = '2'
     elif date[2] == '03':
         date[2] = '3'
     elif date[2] == '04':
@@ -57,7 +55,7 @@ def date_format(date):
     elif date[2] == '08':
         date[2] = '8'
     elif date[2] == '09':
-        date[2] = '2'
+        date[2] = '9'
     return ('{} {}, {}'.format(date[1],date[2], date[0]))
 
 #name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
@@ -203,9 +201,10 @@ def input_excel():
     else:
         adverse = adverse.split(',') 
 
-    #always 1 storey for apartment
+    #always 1 storey for apartment & no basement
     if type == '3':
         storey = '1'
+        basement = '3'
 
 # generate basement comments
 def basement_comment_gen():
@@ -1705,7 +1704,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    auto_input(basement_comments, interior_comments, sales_history_comments)
+    #auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()
