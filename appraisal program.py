@@ -779,6 +779,8 @@ def neighbourhood_city():
     result = ""
     if city.title() == "Ajax" or city.title() == "Whitby":
         result = "Town of " + city.title()
+    elif city.title() == "Clarington":
+        result = "Municipality of " + city.title()
     else:
         result = "City of " + city.title()
     return result
@@ -1704,7 +1706,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    #auto_input(basement_comments, interior_comments, sales_history_comments)
+    auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()
