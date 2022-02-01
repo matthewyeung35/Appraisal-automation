@@ -808,6 +808,8 @@ def city_comment_gen():
         result = "Region of York; City of Markham"
     elif city.title() == "Vaughan":
         result = "Region of York; City of Vaughan"
+    elif city.title() == "Clarington":
+        result = "Region of Durham; Municipality of Clarington"
     return result
 
 #----auto input codes--------
