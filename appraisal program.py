@@ -58,6 +58,21 @@ def date_format(date):
         date[2] = '9'
     return ('{} {}, {}'.format(date[1],date[2], date[0]))
 
+def geo_date_format(date):
+    #example: Dec 15, 2017 to December 15, 2017
+    date= date.replace("Jan","January")
+    date= date.replace("Feb","February")
+    date= date.replace("Mar","March")
+    date= date.replace("Apr","April")
+    date= date.replace("Jun","June")
+    date= date.replace("Jul","July")
+    date= date.replace("Aug","August")
+    date= date.replace("Sep","September")
+    date= date.replace("Oct","October")
+    date= date.replace("Nov","November")
+    date= date.replace("Dec","December")
+    return date
+    
 #name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
 def name_format(name):
     result = ('')
@@ -96,9 +111,17 @@ def sales_history():
     column_no = 'D'
     result = ('')
     # collect geowarehouse data
-    geo_date = date_format(ws[column_no+'25'].value)
-    geo_name = str(name_format(ws[column_no+'26'].value))
-    geo_price = money_format(str(ws[column_no+'27'].value))
+    geo_string = ws[column_no+'25'].value
+    new_string = geo_string.split(" Transfer ")
+    print(new_string)
+    geo_name = str(name_format(new_string[1]))
+    new_string = new_string[0].split(" $")
+    geo_date = geo_date_format(new_string[0])
+    geo_price = money_format(new_string[1].replace(",",''))
+    # old method
+    #geo_date = date_format(ws[column_no+'25'].value)
+    #geo_name = str(name_format(ws[column_no+'26'].value))
+    #geo_price = money_format(str(ws[column_no+'27'].value))
     if geo_price == '0':
         result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for an undisclosed amount. \n'.format(geo_date, geo_name))
     else:
@@ -1716,7 +1739,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    auto_input(basement_comments, interior_comments, sales_history_comments)
+    #auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()
