@@ -71,6 +71,15 @@ def geo_date_format(date):
     date= date.replace("Oct","October")
     date= date.replace("Nov","November")
     date= date.replace("Dec","December")
+    date= date.replace("01","1")
+    date= date.replace("02","2")
+    date= date.replace("03","3")
+    date= date.replace("04","4")
+    date= date.replace("05","5")
+    date= date.replace("06","6")
+    date= date.replace("07","7")
+    date= date.replace("08","8")
+    date= date.replace("09","9")
     return date
     
 #name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
@@ -1738,7 +1747,7 @@ def full_report():
     text_file.write(result)
     text_file.close()
     # auto input data into pdf
-    #auto_input(basement_comments, interior_comments, sales_history_comments)
+    auto_input(basement_comments, interior_comments, sales_history_comments)
 
 def sales_history_only():
     input_excel()
