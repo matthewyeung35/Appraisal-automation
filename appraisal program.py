@@ -113,7 +113,6 @@ def sales_history():
     # collect geowarehouse data
     geo_string = ws[column_no+'25'].value
     new_string = geo_string.split(" Transfer ")
-    print(new_string)
     geo_name = str(name_format(new_string[1]))
     new_string = new_string[0].split(" $")
     geo_date = geo_date_format(new_string[0])
@@ -122,7 +121,7 @@ def sales_history():
     #geo_date = date_format(ws[column_no+'25'].value)
     #geo_name = str(name_format(ws[column_no+'26'].value))
     #geo_price = money_format(str(ws[column_no+'27'].value))
-    if geo_price == '0':
+    if geo_price == '0' or geo_price == '1' or geo_price == '2':
         result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for an undisclosed amount. \n'.format(geo_date, geo_name))
     else:
         result += ('According to GeoWarehouse, the subject property was registered title on {}, to {}, for a total consideration of ${}. \n'.format(geo_date, geo_name, money_format(geo_price)))
