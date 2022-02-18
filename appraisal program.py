@@ -71,15 +71,15 @@ def geo_date_format(date):
     date= date.replace("Oct","October")
     date= date.replace("Nov","November")
     date= date.replace("Dec","December")
-    date= date.replace("01","1")
-    date= date.replace("02","2")
-    date= date.replace("03","3")
-    date= date.replace("04","4")
-    date= date.replace("05","5")
-    date= date.replace("06","6")
-    date= date.replace("07","7")
-    date= date.replace("08","8")
-    date= date.replace("09","9")
+    date= date.replace(" 01"," 1")
+    date= date.replace(" 02"," 2")
+    date= date.replace(" 03"," 3")
+    date= date.replace(" 04"," 4")
+    date= date.replace(" 05"," 5")
+    date= date.replace(" 06"," 6")
+    date= date.replace(" 07"," 7")
+    date= date.replace(" 08"," 8")
+    date= date.replace(" 09"," 9")
     return date
     
 #name formatter, takes in YEUNG, MATTHEW; WHITE, MICHAEL THOMAS; -> return Matthew Yeung & Michael Thomas White
@@ -622,9 +622,11 @@ def neighbour_site():
         "Environmental hazards were not noted at the property based on appraiser's visual observation at the time of appraisal viewing. Site is a {} shaped {} lot located on a {}, backing onto {}. "
         'The lot is improved with a {} storey {} dwelling{}The street characteristics include municipal servicing, paved roads with curbs, street lights, and hydro wires placed {}. '
         'Site improvements include covered concrete porch, pathways and a patio at rear. The subject site features fully fenced backyard and average and similar landscaping in comparison to other properties in the area. '
-        'The subject property existing use is residential single family '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
-        if basement_kitchen == 1:
+        'The subject property existing use is residential '.format(freehold_location[0], freehold_location[1], street_type, freehold_location[2], storey, freehold_type, garage_comment_gen(), electric,))
+        if basement_kitchen == 1 and occupy == 2:
             result+='with self contained basement unit '
+        else:
+            result += 'single family '
         result+='and it is the opinion of the appraiser that this activity constitutes the highest and best use. '
     result += adverse_comment
 
